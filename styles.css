@@ -1,0 +1,1046 @@
+/* styles.css */
+
+/* — فونت «دانا» — */
+@font-face {
+    font-family: 'Dana';
+    font-style: normal;
+    font-weight: 100;
+    src: url('./fonts/woff2/Dana-Thin.woff2') format('woff2'), url('./fonts/woff/Dana-Thin.woff') format('woff');
+    font-family: 'DanaFaNum';
+    src: url('./Webfonts/woff2/DanaFaNum-Thin.woff2') format('woff2'), url('./Webfonts/woff/DanaFaNum-Thin.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Dana';
+    font-style: normal;
+    font-weight: normal;
+    src: url('./fonts/woff2/Dana-Regular.woff2') format('woff2'), url('./fonts/woff/Dana-Regular.woff') format('woff');
+    font-family: 'DanaFaNum';
+    src: url('./Webfonts/woff2/DanaFaNum-Regular.woff2') format('woff2'), url('./Webfonts/woff/DanaFaNum-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Dana';
+    font-style: normal;
+    font-weight: 500;
+    src: url('./fonts/woff2/Dana-Medium.woff2') format('woff2'), url('./fonts/woff/Dana-Medium.woff') format('woff');
+    font-family: 'DanaFaNum';
+    src: url('./Webfonts/woff2/DanaFaNum-Medium.woff2') format('woff2'), url('./Webfonts/woff/DanaFaNum-Medium.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Dana';
+    font-style: normal;
+    font-weight: 700;
+    src: url('./fonts/woff2/Dana-Bold.woff2') format('woff2'), url('./fonts/woff/Dana-Bold.woff') format('woff');
+    font-family: 'DanaFaNum';
+    src: url('./Webfonts/woff2/DanaFaNum-Bold.woff2') format('woff2'), url('./Webfonts/woff/DanaFaNum-Bold.woff') format('woff');
+}
+
+:root {
+    --text-color: #37352f;
+    --bg-color: #fcfcfc;
+    --accent-color: #2d6a4f;
+    --hover-color: #1c4532;
+    --muted-color: #6b7280;
+    --border-color: #e2e8f0;
+    --light-bg: #f7fafc;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --spacing: 1.6rem;
+    --max-width: 900px;
+    --highlight-color: #ffeb3b;
+}
+
+/* ریست پایه */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 70px;
+}
+
+body {
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+    color: var(--text-color);
+    background: var(--bg-color);
+    line-height: 1.7;
+    font-size: 16px;
+    font-feature-settings: "ss01";
+}
+
+.container {
+    width: 90%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+/* هدر */
+.site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem var(--spacing);
+    border-bottom: 2px solid var(--accent-color);
+    margin-bottom: 2rem;
+    position: sticky;
+    top: 0;
+    background-color: rgb(252, 252, 252, 0.95);
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.site-header .logo::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--accent-color);
+    transition: width 0.3s ease;
+}
+
+.site-header .logo:hover::before {
+    width: 100%;
+}
+
+.site-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    margin: 0;
+}
+
+/* جستجو */
+.search-container {
+    display: flex;
+    position: relative;
+    width: 250px;
+    order: 2;
+}
+
+.search-container input {
+    width: 100%;
+    padding: 0.5rem 2.5rem 0.5rem 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.4rem;
+    font-family: 'Dana', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.2);
+}
+
+.search-button {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--accent-color);
+    padding: 0.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-results {
+    margin-bottom: 2rem;
+}
+
+.search-results h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+.search-term-highlight {
+    background-color: var(--highlight-color);
+    padding: 0 2px;
+    border-radius: 2px;
+}
+
+/* استایل‌های منوی پیشنهادات جستجو */
+.search-suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 0.4rem;
+    margin-top: 0.3rem;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.suggestion-item:hover {
+    background-color: var(--light-bg);
+    color: var(--accent-color);
+}
+
+.dark-theme .search-suggestions-dropdown {
+    background-color: #262626;
+    border-color: #2d2d2d;
+}
+
+.dark-theme .suggestion-item:hover {
+    background-color: #1a1a1a;
+}
+
+/* منوی موبایل */
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.mobile-menu-toggle span {
+    width: 100%;
+    height: 3px;
+    background-color: var(--text-color);
+    border-radius: 3px;
+    transition: all 0.3s;
+}
+
+@media (max-width: 700px) {
+    .site-nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background-color: var(--bg-color);
+        flex-direction: column;
+        padding: 5rem 2rem;
+        gap: 1.5rem;
+        transition: right 0.3s ease;
+        z-index: 1;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .site-nav.active {
+        right: 0;
+    }
+
+    .mobile-menu-toggle {
+        display: flex;
+    }
+}
+
+.logo {
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.logo:hover {
+    opacity: 0.85;
+}
+
+.site-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.site-nav a {
+    text-decoration: none;
+    color: var(--muted-color);
+    font-weight: 500;
+    transition: color .2s;
+    font-size: 0.95rem;
+    position: relative;
+}
+
+.site-nav a:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -4px;
+    left: 0;
+    background-color: var(--accent-color);
+    transition: width 0.3s;
+}
+
+.site-nav a:hover {
+    color: var(--accent-color);
+}
+
+.site-nav a:hover:after {
+    width: 100%;
+}
+
+/* دکمه‌ها */
+.button {
+    display: inline-block;
+    padding: .7rem 1.4rem;
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    border-radius: .4rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s, transform 0.1s;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+.back-button {
+    margin-bottom: var(--spacing);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* لیست مقالات */
+.post-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.post {
+    background: white;
+    border-radius: .6rem;
+    padding: 1.8rem;
+    box-shadow: var(--card-shadow);
+    opacity: 0;
+    transition: opacity .3s, transform .3s;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.post-title {
+    font-size: 1.4rem;
+    margin-bottom: .6rem;
+    color: var(--text-color);
+}
+
+.post-meta {
+    color: var(--muted-color);
+    font-size: .9rem;
+    margin-bottom: 1rem;
+}
+
+.post-thumbnail {
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    max-height: 200px;
+}
+
+.post-thumbnail img {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.post-thumbnail img:hover {
+    transform: scale(1.03);
+}
+
+.excerpt {
+    margin-bottom: 1.5rem;
+}
+
+.read-more {
+    align-self: flex-start;
+}
+
+/* صفحه‌بندی */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.pagination a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    text-decoration: none;
+    background: white;
+    color: var(--text-color);
+    font-weight: 500;
+    box-shadow: var(--card-shadow);
+    transition: all 0.2s;
+}
+
+.pagination a:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+.pagination a.active {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* صفحه مقاله */
+.post-detail {
+    width: 100%;
+    background: white;
+    border-radius: .6rem;
+    padding: 2rem;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+}
+
+.post-detail.fade-in {
+    animation: fadeIn .4s ease forwards;
+}
+
+.post-content {
+    line-height: 1.8;
+}
+
+.post-content p {
+    margin-bottom: 1.5rem;
+}
+
+/* استایل تصویر شاخص مقاله */
+.post-featured-image {
+    margin: -2rem -2rem 2rem -2rem;
+    max-height: 400px;
+    overflow: hidden;
+    border-radius: .6rem .6rem 0 0;
+}
+
+.post-featured-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.post-featured-image:hover img {
+    transform: scale(1.03);
+}
+
+.post-content-wrapper {
+    margin-top: 1.5rem;
+}
+
+/* باکس اشتراک‌گذاری */
+.share-box {
+    margin-top: 3rem;
+    padding: 1.5rem;
+    background-color: var(--light-bg);
+    border-radius: .6rem;
+    text-align: center;
+}
+
+.share-box p {
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.share-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: 0.4rem;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+.share-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.copy-link:hover {
+    background-color: #f0f9ff;
+    border-color: #e0f2fe;
+}
+
+.telegram-share {
+    background-color: #0088cc;
+    color: white;
+    border-color: #0088cc;
+}
+
+.telegram-share:hover {
+    background-color: #0077b5;
+    border-color: #0077b5;
+}
+
+/* استایل‌های پیشنهادات جستجو */
+.search-suggestions, .related-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.suggestion-tag {
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 2rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.suggestion-tag:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
+.no-results {
+    text-align: center;
+}
+
+.suggestions-title {
+    margin-top: 1.5rem;
+    font-weight: 500;
+}
+
+.results-count {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--muted-color);
+}
+
+.related-searches {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* استایل برای تصاویر مقاله */
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.post-content img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.post-content figure {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.post-content figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--muted-color);
+}
+
+/* استایل برای کدها */
+.post-content pre {
+    background-color: #f5f5f5;
+    border: 1px solid #e1e4e8;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 1.5rem;
+    font-family: monospace;
+    overflow-x: auto;
+    direction: ltr;
+    text-align: left;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #24292e;
+}
+
+.post-content code {
+    background-color: rgba(27, 31, 35, 0.05);
+    border-radius: 3px;
+    font-family: monospace;
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+}
+
+/* فوتر */
+.site-footer {
+    padding: var(--spacing) 0;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    font-size: .9rem;
+    color: var(--muted-color);
+    margin-top: 3rem;
+    background-color: var(--light-bg);
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+.footer-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: linear-gradient(45deg, var(--accent-color), var(--hover-color));
+    padding: 0.8rem 1.5rem;
+    border-radius: 2rem;
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.footer-contact {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-contact .telegram-link {
+    padding: 0.7rem 1.2rem;
+    background-color: rgba(45, 106, 79, 0.1);
+    border-radius: 2rem;
+    color: var(--accent-color);
+    font-weight: 500;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.footer-contact .telegram-link:hover {
+    background-color: var(--accent-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.telegram-link .telegram-icon {
+    margin-left: 0.7rem;
+    display: inline-flex;
+    background-color: white;
+    border-radius: 50%;
+    padding: 0.3rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.telegram-link:hover .telegram-icon {
+    transform: scale(1.1);
+}
+
+/* مدیا کوئری‌ها */
+@media (max-width: 700px) {
+    .site-header {
+        padding: 0.8rem var(--spacing);
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .site-header .logo {
+        font-size: 1.4rem;
+    }
+
+    .search-container {
+        order: 3;
+        flex: 1 0 100%;
+        margin: 0.5rem 0;
+    }
+
+    .mobile-menu-toggle {
+        height: 2rem;
+        margin-right: 0.5rem;
+    }
+
+    .site-nav {
+        background-color: rgb(252, 252, 252, 0.98);
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .post-detail {
+        padding: 1.5rem;
+    }
+
+    .post-featured-image {
+        margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+    }
+
+    .share-buttons {
+        flex-direction: column;
+    }
+
+    .share-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    h1, #detail-title, #article-title {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    .post-content img {
+        max-width: 100% !important;
+    }
+
+    .tablet-view .post-content-wrapper {
+        padding: 0 0.5rem;
+    }
+
+    /* بهبود ریسپانسیو برای دکمه کپی کد */
+    .tablet-view .copy-code-button {
+        top: 10px;
+        right: 10px;
+        font-size: 11px;
+        padding: 3px 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        font-size: 15px;
+    }
+
+    .post {
+        padding: 1.2rem;
+    }
+
+    .container {
+        width: 95%;
+    }
+
+    .post-detail {
+        padding: 1.2rem;
+    }
+
+    .post-featured-image {
+        margin: -1.2rem -1.2rem 1.2rem -1.2rem;
+        max-height: 250px;
+    }
+
+    .post-meta, .footer-info {
+        font-size: 0.8rem;
+    }
+
+    .suggestion-tag {
+        font-size: 0.8rem;
+    }
+
+    .mobile-view .post-content-wrapper {
+        padding: 0;
+    }
+
+    .mobile-view h2, .mobile-view h3 {
+        font-size: 1.2rem;
+        margin-top: 1.5rem;
+    }
+
+    .mobile-view .copy-code-button {
+        right: 5px;
+        top: 5px;
+        font-size: 10px;
+        padding: 2px 5px;
+    }
+
+    .mobile-view pre {
+        padding: 12px;
+        margin-bottom: 1rem;
+    }
+}
+
+/* استایل مارک دار کردن عنوان مقاله */
+#article-title mark {
+    background-color: rgba(45, 106, 79, 0.15);
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
+    color: var(--accent-color);
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.dark-theme #article-title mark {
+    background-color: rgba(45, 106, 79, 0.3);
+    color: #ffffff;
+}
+
+.copy-code-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+    z-index: 5;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.copy-code-button:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dark-theme {
+    --text-color: #e2e8f0;
+    --bg-color: #121212;
+    --accent-color: #0ea5e9;
+    --hover-color: #0284c7;
+    --muted-color: #94a3b8;
+    --border-color: #334155;
+    --light-bg: #1e293b;
+    --card-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.6), 0 2px 6px -1px rgba(0, 0, 0, 0.4);
+    --highlight-color: #38bdf8;
+    --code-bg: #0f172a;
+    --card-bg: #1e1e1e;
+    --header-bg: rgba(18, 18, 18, 0.95);
+    --footer-bg: #0f172a;
+    --search-bg: #1e1e1e;
+    --tooltip-bg: #374151;
+    --mark-bg: rgba(45, 106, 79, 0.25);
+}
+
+.dark-theme .post,
+.dark-theme .post-detail {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+.dark-theme .site-header {
+    border-bottom-color: var(--border-color);
+    background-color: var(--header-bg);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .site-footer {
+    border-top-color: var(--border-color);
+    background-color: var(--footer-bg);
+}
+
+.dark-theme .pagination a {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+.dark-theme .pagination a:hover {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.dark-theme .pagination a.active {
+    box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+.dark-theme .search-container input {
+    background-color: var(--search-bg);
+    border-color: var(--border-color);
+    color: var(--text-color);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .search-container input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25), inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .post-content pre {
+    background-color: var(--code-bg);
+    border-color: var(--border-color);
+    color: #e2e8f0;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .post-content code {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #93c5fd;
+}
+
+.dark-theme mark, 
+.dark-theme .search-term-highlight {
+    background-color: rgba(56, 189, 248, 0.25);
+    color: #fff;
+    border-radius: 2px;
+}
+
+.dark-theme .button {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .button:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.dark-theme .theme-toggle .sun-icon {
+    display: none;
+}
+
+.dark-theme .theme-toggle .moon-icon {
+    display: block;
+}
+
+.dark-theme .post-content img {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+}
+
+.dark-theme .copy-code-button {
+    background-color: var(--accent-color);
+}
+
+.dark-theme .suggestion-tag {
+    background-color: var(--light-bg);
+    border-color: var(--border-color);
+}
+
+.dark-theme .suggestion-tag:hover {
+    background-color: var(--accent-color);
+}
+
+.image-viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.image-viewer img {
+    max-width: 90%;
+max-height: 90%;
+                object-fit: contain;
+                border-radius: 3px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+                animation: zoomIn 0.3s ease;
+            }
+
+            @keyframes zoomIn {
+                from { transform: scale(0.95); opacity: 0; }
+                to { transform: scale(1); opacity: 1; }
+            }
+
+            .image-viewer .close-button {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                font-size: 2rem;
+                cursor: pointer;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+            }
+
+            .image-viewer .close-button:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+            }
+
+            .dark-theme .image-viewer {
+                background-color: rgba(0, 0, 0, 0.95);
+            }
+
+            .dark-theme .image-viewer img {
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
+                border: 1px solid var(--border-color);
+            }
