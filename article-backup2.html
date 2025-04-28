@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>مقاله | وبلاگ امنیت وب</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="مقاله در وبلاگ امنیت وب" id="dynamic-description">
+    <meta property="og:title" content="مقاله | وبلاگ امنیت وب" id="og-title">
+    <meta property="og:description" content="مقاله در وبلاگ امنیت وب" id="og-description">
+    <link rel="canonical" href="" id="canonical-link">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        .loading-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message-container {
+            background-color: #fff5f5;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #feb2b2;
+            max-width: 600px;
+            margin: 40px auto;
+        }
+
+        .dark-theme .error-message-container {
+            background-color: #3b1818;
+            border-color: #9b2c2c;
+        }
+
+        .error-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .error-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .reload-button {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .home-button {
+            background-color: #4a5568;
+            color: white;
+        }
+    </style>
+    <script>
+        function generatePDF(event) {
+            event.preventDefault();
+
+            // دریافت محتوای مقاله
+            const articleTitle = document.getElementById('article-title').textContent;
+            const articleContent = document.getElementById('article-body');
+
+            if (!articleTitle || !articleContent) {
+                alert('خطا در بارگذاری محتوای مقاله');
+                return;
+            }
+
+            // نمایش پیام در حال دانلود
+            const downloadMessage = document.createElement('div');
+            downloadMessage.className = 'download-message';
+            downloadMessage.textContent = 'در حال آماده‌سازی PDF...';
+            document.body.appendChild(downloadMessage);
+
+            try {
+                // ایجاد یک المان موقت برای محتوای PDF با استایل‌های مناسب
+                const pdfContent = document.createElement('div');
+
+                // کپی محتوا برای جلوگیری از تغییر صفحه اصلی
+                const titleElem = document.createElement('h1');
+                titleElem.textContent = articleTitle.replace(/<\/?[^>]+(>|$)/g, ""); // حذف تگ‌های HTML از عنوان
+                titleElem.style.textAlign = 'center';
+                titleElem.style.color = '#2d6a4f';
+                titleElem.style.fontFamily = 'Dana, DanaFaNum, Arial, sans-serif';
+                titleElem.style.marginBottom = '20px';
+                titleElem.style.fontSize = '24px';
+
+                const contentClone = articleContent.cloneNode(true);
+
+                // حذف دکمه‌ها و عناصر اضافی از محتوا
+                contentClone.querySelectorAll('.copy-code-button, .share-box, button').forEach(el => el.remove());
+
+                pdfContent.appendChild(titleElem);
+
+                const divider1 = document.createElement('hr');
+                divider1.style.margin = '20px 0';
+                divider1.style.border = '1px solid #e2e8f0';
+                pdfContent.appendChild(divider1);
+
+                // افزودن تصویر شاخص اگر وجود دارد
+                const featuredImg = articleContent.querySelector('.post-featured-image img');
+                if (featuredImg) {
+                    const imgClone = document.createElement('div');
+                    imgClone.style.textAlign = 'center';
+                    imgClone.style.margin = '20px 0';
+                    const img = document.createElement('img');
+                    img.src = featuredImg.src;
+                    img.style.maxWidth = '90%';
+                    img.style.margin = '0 auto';
+                    imgClone.appendChild(img);
+                    pdfContent.appendChild(imgClone);
+                }
+
+                // افزودن محتوای اصلی مقاله
+                const contentWrapper = document.createElement('div');
+                contentWrapper.style.fontFamily = 'Dana, DanaFaNum, Arial, sans-serif';
+                contentWrapper.style.lineHeight = '1.8';
+                contentWrapper.style.textAlign = 'right';
+                contentWrapper.style.direction = 'rtl';
+                contentWrapper.innerHTML = contentClone.querySelector('.post-content-wrapper') ?
+                    contentClone.querySelector('.post-content-wrapper').innerHTML : contentClone.innerHTML;
+                pdfContent.appendChild(contentWrapper);
+
+                const divider2 = document.createElement('hr');
+                divider2.style.margin = '20px 0';
+                divider2.style.border = '1px solid #e2e8f0';
+                pdfContent.appendChild(divider2);
+
+                const footer = document.createElement('p');
+                footer.textContent = 'دانلود شده از وبلاگ آموزشی';
+                footer.style.textAlign = 'center';
+                footer.style.color = '#666';
+                footer.style.fontFamily = 'Dana, DanaFaNum, Arial, sans-serif';
+                footer.style.fontSize = '12px';
+                pdfContent.appendChild(footer);
+
+                // تنظیمات PDF
+                const options = {
+                    margin: [15, 15, 15, 15],
+                    filename: `${articleTitle.replace(/\s+/g, '-').replace(/<\/?[^>]+(>|$)/g, "")}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                // تولید PDF
+                html2pdf().from(pdfContent).set(options).save().then(() => {
+                    // حذف پیام بعد از دانلود
+                    document.body.removeChild(downloadMessage);
+                }).catch(error => {
+                    console.error('خطا در ایجاد PDF:', error);
+                    alert('متأسفانه در ایجاد PDF مشکلی پیش آمد. لطفاً دوباره تلاش کنید.');
+                    document.body.removeChild(downloadMessage);
+                });
+            } catch (error) {
+                console.error('خطا در ایجاد PDF:', error);
+                alert('متأسفانه در ایجاد PDF مشکلی پیش آمد. لطفاً دوباره تلاش کنید.');
+                document.body.removeChild(downloadMessage);
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <header class="site-header container">
+        <a href="index.html" class="logo">وبلاگ امنیت وب</a>
+    </header>
+
+    <main class="site-main container">
+        <!-- جزئیات مقاله -->
+        <article id="article-content" class="post-detail fade-in" data-post-id="post-1">
+            <a href="index.html" class="button back-button">◀ بازگشت به صفحه اصلی</a>
+            <h1 id="article-title"></h1>
+            <p id="article-meta" class="post-meta"></p>
+            <div id="article-body" class="post-content"></div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span>© ۱۴۰۴ وبلاگ افزایش آگاهی عمومی</span>
+                    <span>|</span>
+                    <span>ساخته شده با هوش مصنوعی</span>
+                    <span>|</span>
+                    <span>توسعه مداوم با AI</span>
+                </div>
+                <div class="footer-contact">
+                    <a href="https://t.me/http_users" target="_blank" class="telegram-link">
+                        <span class="telegram-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--accent-color)" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.0717 3.57277C21.8063 3.34026 21.4482 3.25452 21.1168 3.34026L2.83748 9.34026C2.39498 9.46725 2.09123 9.83027 2.01873 10.2866C1.95061 10.7428 2.13436 11.1764 2.50311 11.4153L6.57886 14.2053V19.9991C6.57886 20.4553 6.82936 20.8678 7.22561 21.0928C7.4186 21.1991 7.63873 21.2491 7.85323 21.2491C8.0771 21.2491 8.29685 21.1928 8.4961 21.0928L12.5719 18.9303L15.5781 21.5553C15.8622 21.8116 16.2396 21.9491 16.6296 21.9491C16.7156 21.9491 16.8081 21.9428 16.8969 21.9241C17.3781 21.8178 17.7781 21.5053 17.9656 21.0616L22.2781 4.56152C22.4031 4.23027 22.3281 3.8053 22.0717 3.57277ZM16.5594 6.18652L8.6156 13.4678L4.97686 10.9678L16.5594 6.18652ZM8.57611 19.2491V15.6928L10.7219 17.6241L8.57611 19.2491ZM16.6296 19.9491L9.41735 13.5116L20.6343 5.13027L16.6296 19.9491Z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        <span>دسترسی به کانال تلگرام</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // مدیریت نظرات غیرفعال شده است
+        const CommentsManager = {
+            loadComments: async function() { return []; },
+            addComment: async function() { return null; },
+            addReply: async function() { return null; },
+            editComment: async function() { return false; },
+            deleteComment: async function() { return false; },
+            deleteReply: async function() { return false; },
+            saveComments: async function() { return false; }
+        };
+
+        // دریافت اطلاعات مقاله از پارامتر URL
+        function getArticleData() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const articleId = urlParams.get('id');
+
+                if (!articleId) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // نمایش حالت بارگذاری
+                const articleContainer = document.getElementById('article-content');
+                if (articleContainer) {
+                    articleContainer.innerHTML = `
+                        <div class="loading-message">
+                            <div class="loading-spinner"></div>
+                            <p>در حال بارگذاری مقاله...</p>
+                        </div>
+                    `;
+                }
+
+                fetch('posts.json')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('خطا در دریافت فایل مقالات');
+                        }
+                        // ابتدا متن خام دریافت می‌کنیم
+                        return response.text();
+                    })
+                    .then(jsonText => {
+                        // بررسی می‌کنیم که متن خالی نباشد
+                        if (!jsonText || jsonText.trim() === '') {
+                            throw new Error('فایل JSON خالی است');
+                        }
+
+                        try {
+                            // تبدیل متن به آبجکت JSON
+                            const posts = JSON.parse(jsonText);
+
+                            // بررسی اعتبار داده‌های دریافتی
+                            if (!Array.isArray(posts)) {
+                                throw new Error('فرمت داده‌های دریافتی نامعتبر است');
+                            }
+
+                            const article = posts.find(post => post.id === articleId);
+                            if (article) {
+                                showArticle(article);
+                            } else {
+                                window.location.href = 'index.html';
+                            }
+                        } catch (parseError) {
+                            console.error('خطا در پردازش JSON مقالات:', parseError);
+                            throw new Error('خطا در پردازش فایل JSON: ' + parseError.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('خطا در بارگذاری مقاله:', error);
+                        // نمایش پیام خطا به کاربر
+                        if (articleContainer) {
+                            articleContainer.innerHTML = `
+                                <div class="error-message-container">
+                                    <div class="error-icon">⚠️</div>
+                                    <h2>متأسفانه در بارگذاری مقاله مشکلی پیش آمد</h2>
+                                    <p>لطفا صفحه را مجدداً بارگذاری کنید یا به صفحه اصلی برگردید.</p>
+                                    <div class="error-actions">
+                                        <button onclick="location.reload()" class="button reload-button">بارگذاری مجدد</button>
+                                        <a href="index.html" class="button home-button">بازگشت به صفحه اصلی</a>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            alert('متأسفانه در بارگذاری مقاله مشکلی پیش آمد. لطفا صفحه را مجدداً بارگذاری کنید.');
+                            window.location.href = 'index.html';
+                        }
+                    });
+            } catch (error) {
+                console.error('خطای کلی در بارگذاری مقاله:', error);
+                alert('خطا در بارگذاری مقاله. لطفاً به صفحه اصلی بازگردید.');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // بررسی تم ذخیره شده
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark-theme');
+        }
+
+        // ایجاد دکمه تغییر تم به صورت پویا - فعلا غیرفعال است
+        function createThemeToggle() {
+            // دکمه موقتا ایجاد نمی‌شود
+            return;
+            // کد زیر فعلا اجرا نمی‌شود
+            const themeToggle = document.createElement('button');
+            themeToggle.className = 'theme-toggle';
+            themeToggle.setAttribute('aria-label', 'تغییر تم روشن/تاریک');
+            themeToggle.innerHTML = `
+                <div class="theme-toggle-icon">
+                    <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 1V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 21V23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M4.22 4.22L5.64 5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18.36 18.36L19.78 19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M1 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 12H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M4.22 19.78L5.64 18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 12.79C20.8427 14.4922 20.2037 16.1144 19.1582 17.4668C18.1126 18.8192 16.7025 19.8458 15.0957 20.4265C13.4889 21.0073 11.7467 21.1181 10.0797 20.7461C8.41267 20.3741 6.88338 19.5345 5.67418 18.3254C4.46497 17.1162 3.62545 15.5869 3.25349 13.9199C2.88153 12.2529 2.99227 10.5106 3.57303 8.90386C4.15378 7.29711 5.18035 5.88696 6.53278 4.84132C7.8852 3.79569 9.50739 3.15683 11.21 3C10.2134 4.34827 9.73385 6.00945 9.85853 7.68141C9.9832 9.35338 10.7038 10.9251 11.8894 12.1106C13.0749 13.2961 14.6466 14.0168 16.3186 14.1415C17.9906 14.2662 19.6517 13.7866 21 12.79Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span class="theme-toggle-text">تغییر تم</span>
+            `;
+
+            // اضافه کردن به body
+            document.body.appendChild(themeToggle);
+
+            // اضافه کردن event listener
+            themeToggle.addEventListener('click', function() {
+                document.documentElement.classList.toggle('dark-theme');
+
+                // ذخیره تنظیمات تم
+                const isDark = document.documentElement.classList.contains('dark-theme');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                setCookie('theme', isDark ? 'dark' : 'light', 365);
+
+                // به‌روزرسانی متن دکمه
+                const textSpan = themeToggle.querySelector('.theme-toggle-text');
+                if (textSpan) {
+                    textSpan.textContent = isDark ? 'تم روشن' : 'تم تاریک';
+                }
+            });
+
+            // تنظیم متن اولیه بر اساس تم فعلی
+            const isDark = document.documentElement.classList.contains('dark-theme');
+            const textSpan = themeToggle.querySelector('.theme-toggle-text');
+            if (textSpan) {
+                textSpan.textContent = isDark ? 'تم روشن' : 'تم تاریک';
+            }
+        }
+
+        // ایجاد دکمه تغییر تم
+        createThemeToggle();
+
+
+        // نمایش اطلاعات مقاله
+        function showArticle(article) {
+            // تنظیم عنوان صفحه
+            document.title = article.title + ' | وبلاگ امنیت وب';
+
+            // نمایش اطلاعات مقاله
+            const titleElement = document.getElementById('article-title');
+            titleElement.innerHTML = `<mark>${article.title}</mark>`; // مارک دار کردن عنوان
+            document.getElementById('article-meta').textContent = `تاریخ: ${article.date} | نویسنده: ${article.author}`;
+
+            const contentContainer = document.getElementById('article-body');
+            contentContainer.innerHTML = ''; // پاک کردن محتوای قبلی
+
+            // اضافه کردن تصویر شاخص اگر وجود داشته باشد
+            if (article.image) {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'post-featured-image';
+
+                const img = document.createElement('img');
+                img.src = article.image;
+                img.alt = article.title;
+                img.loading = 'eager';
+
+                imgContainer.appendChild(img);
+                contentContainer.appendChild(imgContainer);
+            }
+
+            // افزودن محتوای اصلی مقاله
+            const contentWrapper = document.createElement('div');
+            contentWrapper.className = 'post-content-wrapper';
+
+            // حذف تصاویر تکراری از محتوا اگر تصویر شاخص وجود دارد
+            let content = article.content;
+            if (article.image) {
+                // حذف اولین تگ img در محتوا اگر تصویر شاخص وجود دارد
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = content;
+
+                const firstImg = tempDiv.querySelector('img');
+                if (firstImg && firstImg.src && firstImg.src.includes(article.image.split('/').pop())) {
+                    firstImg.parentElement.removeChild(firstImg);
+                }
+
+                content = tempDiv.innerHTML;
+            }
+
+            contentWrapper.innerHTML = content;
+            contentContainer.appendChild(contentWrapper);
+
+            // هایلایت کردن کلمات کلیدی
+            highlightKeywords();
+
+            // مدیریت رسانه‌ها
+            handleMediaElements();
+
+            // اضافه کردن دکمه اشتراک‌گذاری
+            addShareButton(article);
+
+            // مدیریت ریسپانسیو بودن
+            setupResponsiveHandling();
+
+            // بخش نظرات غیرفعال شده است
+            // await loadAndDisplayComments(post);
+        }
+
+
+        // تنظیم ریسپانسیو
+        function setupResponsiveHandling() {
+            const handleResize = () => {
+                const width = window.innerWidth;
+                const article = document.getElementById('article-content');
+                if (!article) return;
+
+                if (width <= 480) {
+                    article.classList.add('mobile-view');
+                } else if (width <= 700) {
+                    article.classList.add('tablet-view');
+                    article.classList.remove('mobile-view');
+                } else {
+                    article.classList.remove('tablet-view', 'mobile-view');
+                }
+            };
+
+            // اجرا در بارگذاری و تغییر اندازه پنجره
+            handleResize();
+            window.addEventListener('resize', handleResize);
+        }
+
+        // هایلایت کردن کلمات کلیدی
+        function highlightKeywords() {
+            // لیستی از کلمات کلیدی
+            const keywords = ['HttpOnly', 'XSS', 'CSRF', 'Security', 'امنیت', 'کوکی', 'جلسه', 'حمله'];
+
+            const content = document.getElementById('article-body');
+            if (!content) return;
+
+            // پیمایش در کل کلمات کلیدی
+            keywords.forEach(keyword => {
+                // ایجاد عبارت باقاعده برای پیدا کردن کلمات کلیدی
+                const regex = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+
+                // پیدا کردن و هایلایت کردن کلمات کلیدی در محتوا
+                content.querySelectorAll('p, li').forEach(el => {
+                    if (!el.querySelector('code, pre, mark')) { // اگر شامل کد یا علامت‌گذاری قبلی نباشد
+                        el.innerHTML = el.innerHTML.replace(regex, '<mark>$1</mark>');
+                    }
+                });
+            });
+        }
+
+        // مدیریت رسانه‌ها در محتوای مقاله
+        function handleMediaElements() {
+            // لود تنبل (lazy loading) تصاویر
+            document.querySelectorAll('#article-body img').forEach(img => {
+                img.loading = 'lazy';
+
+                // افزودن کلاس برای انیمیشن ظهور
+                img.classList.add('lazy-image');
+
+                // افزودن قابلیت بزرگنمایی با کلیک
+                img.addEventListener('click', () => {
+                    showImageViewer(img.src, img.alt);
+                });
+            });
+
+            // افزودن قابلیت کپی به بلوک‌های کد
+            document.querySelectorAll('#article-body pre').forEach(pre => {
+                const codeBlock = pre.querySelector('code') || pre;
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-code-button';
+                copyButton.textContent = 'کپی کد';
+                copyButton.addEventListener('click', () => {
+                    navigator.clipboard.writeText(codeBlock.textContent)
+                        .then(() => {
+                            const originalText = copyButton.textContent;
+                            copyButton.textContent = 'کپی شد! ✓';
+                            copyButton.style.backgroundColor = '#10b981'; // رنگ سبز موفقیت
+                            setTimeout(() => {
+                                copyButton.textContent = originalText;
+                                copyButton.style.backgroundColor = '';
+                            }, 2000);
+                        })
+                        .catch(err => console.error('خطا در کپی کردن:', err));
+                });
+
+                pre.style.position = 'relative';
+                pre.appendChild(copyButton);
+            });
+        }
+
+        // نمایش ویوئر تصویر
+        function showImageViewer(src, alt) {
+            // ایجاد یک لایه مودال برای نمایش تصویر
+            const viewer = document.createElement('div');
+            viewer.className = 'image-viewer';
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = alt || 'تصویر بزرگ';
+
+            const closeButton = document.createElement('button');
+            closeButton.className = 'close-button';
+            closeButton.innerHTML = '&times;';
+            closeButton.setAttribute('aria-label', 'بستن');
+
+            viewer.appendChild(img);
+            viewer.appendChild(closeButton);
+
+            document.body.appendChild(viewer);
+
+            // جلوگیری از اسکرول صفحه هنگام باز بودن ویوئر
+            document.body.style.overflow = 'hidden';
+
+            // رویداد بستن ویوئر
+            closeButton.addEventListener('click', () => {
+                document.body.removeChild(viewer);
+                document.body.style.overflow = '';
+            });
+
+            // بستن با کلیک بیرون از تصویر
+            viewer.addEventListener('click', e => {
+                if (e.target === viewer) {
+                    document.body.removeChild(viewer);
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+
+        // اضافه کردن دکمه اشتراک‌گذاری
+        function addShareButton(article) {
+            const contentContainer = document.getElementById('article-body');
+            if (!contentContainer) return;
+
+            // ایجاد باکس اشتراک‌گذاری
+            const shareBox = document.createElement('div');
+            shareBox.className = 'share-box';
+
+            const shareText = document.createElement('p');
+            shareText.textContent = 'این مقاله را به اشتراک بگذارید:';
+
+            const shareBtns = document.createElement('div');
+            shareBtns.className = 'share-buttons';
+
+            // دکمه کپی لینک
+            const copyLink = document.createElement('button');
+            copyLink.className = 'share-btn copy-link';
+            copyLink.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg><span>کپی لینک</span>';
+
+            // اضافه کردن کلاس فونت دانا به دکمه کپی لینک
+            copyLink.classList.add('dana-font');
+
+            // اضافه کردن فونت دانا به المان span داخل دکمه
+            const copyLinkSpan = copyLink.querySelector('span');
+            if (copyLinkSpan) {
+                copyLinkSpan.classList.add('dana-font');
+                copyLinkSpan.style.fontFamily = 'Dana, DanaFaNum, sans-serif';
+            }
+
+            copyLink.addEventListener('click', () => {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    const spanElement = copyLink.querySelector('span');
+                    spanElement.textContent = 'کپی شد!';
+
+                    // انیمیشن تایید کپی
+                    copyLink.style.backgroundColor = '#10b981';
+                    copyLink.style.borderColor = '#10b981';
+                    copyLink.style.color = 'white';
+
+                    setTimeout(() => {
+                        spanElement.textContent = 'کپی لینک';
+                        copyLink.style.backgroundColor = '';
+                        copyLink.style.borderColor = '';
+                        copyLink.style.color = '';
+                    }, 2000);
+                });
+            });
+
+            // دکمه تلگرام
+            const telegramShare = document.createElement('a');
+            telegramShare.className = 'share-btn telegram-share';
+            telegramShare.style.backgroundColor = '#0088cc';
+            telegramShare.style.color = 'white';
+            telegramShare.style.borderColor = '#0088cc';
+            telegramShare.innerHTML = '<svg width="16" height="16" viewBox`0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M22.0717 3.57277C21.8063 3.34026 21.4482 3.25452 21.1168 3.34026L2.83748 9.34026C2.39498 9.46725 2.09123 9.83027 2.01873 10.2866C1.95061 10.7428 2.13436 11.1764 2.50311 11.4153L6.57886 14.2053V19.9991C6.57886 20.4553 6.82936 20.8678 7.22561 21.0928C7.4186 21.1991 7.63873 21.2491 7.85323 21.2491C8.0771 21.2491 8.29685 21.1928 8.4961 21.0928L12.5719 18.9303L15.5781 21.5553C15.8622 21.8116 16.2396 21.9491 16.6296 21.9491C16.7156 21.9491 16.8081 21.9428 16.8969 21.9241C17.3781 21.8178 17.7781 21.5053 17.9656 21.0616L22.2781 4.56152C22.4031 4.23027 22.3281 3.8053 22.0717 3.57277ZM16.5594 6.18652L8.6156 13.4678L4.97686 10.9678L16.5594 6.18652ZM8.57611 19.2491V15.6928L10.7219 17.6241L8.57611 19.2491ZM16.6296 19.9491L9.41735 13.5116L20.6343 5.13027L16.6296 19.9491Z" fill="white"/></svg><span>تلگرام</span>';
+            telegramShare.href = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(article.title)}`;
+            telegramShare.target = '_blank';
+            telegramShare.rel = 'noopener noreferrer';
+
+            // دکمه ایکس (توییتر)
+            const twitterShare = document.createElement('a');
+            twitterShare.className = 'share-btn twitter-share';
+            twitterShare.style.backgroundColor = '#000000';
+            twitterShare.style.color = 'white';
+            twitterShare.style.borderColor = '#000000';
+            twitterShare.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span>ایکس</span>';
+            twitterShare.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(article.title)}`;
+            twitterShare.target = '_blank';
+            twitterShare.rel = 'noopener noreferrer';
+
+            // دکمه واتساپ
+            const whatsappShare = document.createElement('a');
+            whatsappShare.className = 'share-btn whatsapp-share';
+            whatsappShare.style.backgroundColor = '#25d366';
+            whatsappShare.style.color = 'white';
+            whatsappShare.style.borderColor = '#25d366';
+            whatsappShare.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.101-.473-.15-.673.15-.197.295-.771.964-.944 1.162-.175.195-.349.21-.646.075-.3-.15-1.263-.465-2.403-1.485-.888-.795-1.484-1.77-1.66-2.07-.174-.3-.019-.465.13-.615.136-.135.301-.345.451-.523.146-.181.194-.301.297-.496.1-.21.049-.375-.025-.524-.075-.15-.672-1.62-.922-2.206-.24-.584-.487-.51-.672-.51-.172-.015-.371-.015-.571-.015-.2 0-.523.074-.797.359-.273.3-1.045 1.02-1.045 2.475s1.07 2.865 1.219 3.075c.149.195 2.105 3.195 5.1 4.485.714.3 1.27.48 1.704.629.714.227 1.365.195 1.88.121.574-.091 1.767-.721 2.016-1.426.255-.705.255-1.29.18-1.425-.074-.135-.27-.21-.57-.345m-5.446 7.443h-.016c-1.77 0-3.524-.48-5.055-1.38l-.36-.214-3.75.975 1.005-3.645-.239-.375c-.99-1.576-1.516-3.391-1.516-5.26 0-5.445 4.455-9.885 9.942-9.885 2.654 0 5.145 1.035 7.021 2.91 1.875 1.859 2.909 4.35 2.909 6.99-.004 5.444-4.46 9.885-9.935 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c1.746.943 3.71 1.444 5.71 1.447h.006c6.585 0 11.946-5.336 11.949-11.896 0-3.176-1.24-6.165-3.495-8.411"/></svg><span>واتساپ</span>';
+            whatsappShare.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(article.title + ' ' + window.location.href)}`;
+            whatsappShare.target = '_blank';
+            whatsappShare.rel = 'noopener noreferrer';
+
+            // دکمه لینکدین
+            const linkedinShare = document.createElement('a');
+            linkedinShare.className = 'share-btn linkedin-share';
+            linkedinShare.style.backgroundColor = '#0077b5';
+            linkedinShare.style.color = 'white';
+            linkedinShare.style.borderColor = '#0077b5';
+            linkedinShare.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg><span>لینکدین</span>';
+            linkedinShare.href = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(article.title)}`;
+            linkedinShare.target = '_blank';
+            linkedinShare.rel = 'noopener noreferrer';
+
+            // دکمه دانلود PDF
+            const pdfDownload = document.createElement('a');
+            pdfDownload.className = 'share-btn pdf-download';
+            pdfDownload.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg><span>دانلود PDF</span>';
+            pdfDownload.style.backgroundColor = '#ff5722';
+            pdfDownload.style.color = 'white';
+            pdfDownload.style.borderColor = '#ff5722';
+            pdfDownload.href = '#';
+            pdfDownload.addEventListener('click', function(e) {
+                e.preventDefault();
+                generatePDF(article);
+            });
+
+            shareBtns.appendChild(copyLink);
+            shareBtns.appendChild(telegramShare);
+            shareBtns.appendChild(twitterShare);
+            shareBtns.appendChild(whatsappShare);
+            shareBtns.appendChild(linkedinShare);
+            shareBtns.appendChild(pdfDownload);
+
+            shareBox.appendChild(shareText);
+            shareBox.appendChild(shareBtns);
+
+            contentContainer.appendChild(shareBox);
+        }
+
+        // بارگذاری و نمایش نظرات - غیرفعال شده
+        async function loadAndDisplayComments(post) {
+            // بخش نظرات غیرفعال شده است
+            return;
+        }
+
+        // کد مربوط به کپی لینک
+        const copyLinkBtn = document.getElementById("copy-link-btn");
+        if (copyLinkBtn) {
+            copyLinkBtn.addEventListener("click", function() {
+                const currentUrl = window.location.href;
+                navigator.clipboard.writeText(currentUrl).then(function() {
+                    alert("لینک مقاله کپی شد!");
+                }, function() {
+                    alert("خطا در کپی لینک!");
+                });
+            });
+        }
+
+        // کد مربوط به اشتراک در تلگرام
+        const telegramShareBtn = document.getElementById("telegram-share-btn");
+        if (telegramShareBtn) {
+            telegramShareBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                const currentUrl = encodeURIComponent(window.location.href);
+                const title = encodeURIComponent(document.title);
+                window.open(`https://t.me/share/url?url=${currentUrl}&text=${title}`, '_blank');
+            });
+        }
+
+        // کد مربوط به اشتراک در ایکس (توییتر)
+        const twitterShareBtn = document.getElementById("twitter-share-btn");
+        if (twitterShareBtn) {
+            twitterShareBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                const currentUrl = encodeURIComponent(window.location.href);
+                const title = encodeURIComponent(document.title);
+                window.open(`https://twitter.com/intent/tweet?url=${currentUrl}&text=${title}`, '_blank');
+            });
+        }
+
+        // کد مربوط به اشتراک در فیسبوک
+        const facebookShareBtn = document.getElementById("facebook-share-btn");
+        if (facebookShareBtn) {
+            facebookShareBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                const currentUrl = encodeURIComponent(window.location.href);
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`, '_blank');
+            });
+        }
+
+        // دانلود PDF
+        const pdfDownloadBtn = document.getElementById("pdf-download-btn");
+        if (pdfDownloadBtn) {
+            pdfDownloadBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                alert("در حال آماده‌سازی فایل PDF... این قابلیت به زودی فعال خواهد شد.");
+            });
+        }
+
+        // بزرگنمایی تصاویر مقاله با کلیک
+        const articleImages = document.querySelectorAll('.post-content img');
+        articleImages.forEach(img => {
+            img.addEventListener('click', function() {
+                const imageViewer = document.createElement('div');
+                imageViewer.className = 'image-viewer';
+
+                const imageElement = document.createElement('img');
+                imageElement.src = this.src;
+                imageElement.alt = this.alt;
+
+                const closeButton = document.createElement('button');
+                closeButton.className = 'close-button';
+                closeButton.innerHTML = '&times;';
+                closeButton.addEventListener('click', function() {
+                    imageViewer.remove();
+                });
+
+                imageViewer.appendChild(imageElement);
+                imageViewer.appendChild(closeButton);
+                document.body.appendChild(imageViewer);
+
+                // بستن با کلیک روی پس‌زمینه
+                imageViewer.addEventListener('click', function(e) {
+                    if (e.target === imageViewer) {
+                        imageViewer.remove();
+                    }
+                });
+
+                // بستن با کلید ESC
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        imageViewer.remove();
+                    }
+                });
+            });
+        });
+
+        // کد کپی برای بلوک‌های کد
+        const codeBlocks = document.querySelectorAll('pre');
+        codeBlocks.forEach((block, index) => {
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-code-button';
+            copyButton.textContent = 'کپی کد';
+            copyButton.setAttribute('data-index', index);
+
+            block.style.position = 'relative';
+            block.insertBefore(copyButton, block.firstChild);
+
+            copyButton.addEventListener('click', function() {
+                const code = block.querySelector('code') ? block.querySelector('code').textContent : block.textContent;
+                navigator.clipboard.writeText(code).then(
+                    function() {
+                        // تغییر متن دکمه برای نمایش موفقیت
+                        copyButton.textContent = 'کپی شد!';
+                        setTimeout(function() {
+                            copyButton.textContent = 'کپی کد';
+                        }, 2000);
+                    },
+                    function() {
+                        copyButton.textContent = 'خطا!';
+                        setTimeout(function() {
+                            copyButton.textContent = 'کپی کد';
+                        }, 2000);
+                    }
+                );
+            });
+        });
+
+        // بارگذاری و نمایش مقاله
+        async function loadArticle() {
+            try {
+                // دریافت شناسه مقاله از پارامترهای URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const postId = urlParams.get('id');
+
+                if (!postId) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // دریافت مقالات
+                const response = await fetch('posts.json');
+                if (!response.ok) throw new Error('خطا در دریافت مقالات');
+
+                const posts = await response.json();
+                const post = posts.find(p => p.id === postId);
+
+                if (!post) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // بروزرسانی عنوان و متاتگ‌ها
+                document.title = post.title + ' | وبلاگ امنیت وب';
+
+                // بروزرسانی متاتگ‌های سئو
+                document.getElementById('dynamic-title').content = post.title + ' | وبلاگ امنیت وب';
+                document.getElementById('dynamic-description').content = post.excerpt;
+                document.getElementById('og-title').content = post.title + ' | وبلاگ امنیت وب';
+                document.getElementById('og-description').content = post.excerpt;
+
+                // بروزرسانی کنونیکال
+                const canonicalUrl = window.location.origin + window.location.pathname + '?id=' + post.id;
+                document.getElementById('canonical-link').href = canonicalUrl;
+
+                // اضافه کردن اسکیما
+                addArticleSchema(post);
+
+                // نمایش اطلاعات مقاله
+                const titleElement = document.getElementById('article-title');
+                if (titleElement) {
+                    titleElement.innerHTML = `<mark>${post.title}</mark>`; // مارک دار کردن عنوان
+                }
+                const metaElement = document.getElementById('article-meta');
+                if (metaElement) {
+                    metaElement.textContent = `تاریخ: ${post.date} | نویسنده: ${post.author}`;
+                }
+
+                const contentContainer = document.getElementById('article-body');
+                contentContainer.innerHTML = ''; // پاک کردن محتوای قبلی
+
+                // اضافه کردن تصویر شاخص اگر وجود داشته باشد
+                if (post.image) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'post-featured-image';
+
+                    const img = document.createElement('img');
+                    img.src = post.image;
+                    img.alt = post.title;
+                    img.loading = 'eager';
+
+                    imgContainer.appendChild(img);
+                    contentContainer.appendChild(imgContainer);
+                }
+
+                // افزودن محتوای اصلی مقاله
+                const contentWrapper = document.createElement('div');
+                contentWrapper.className = 'post-content-wrapper';
+
+                // حذف تصاویر تکراری از محتوا اگر تصویر شاخص وجود دارد
+                let content = post.content;
+                if (post.image) {
+                    // حذف اولین تگ img در محتوا اگر تصویر شاخص وجود دارد
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = content;
+
+                    const firstImg = tempDiv.querySelector('img');
+                    if (firstImg && firstImg.src && firstImg.src.includes(post.image.split('/').pop())) {
+                        firstImg.parentElement.removeChild(firstImg);
+                    }
+
+                    content = tempDiv.innerHTML;
+                }
+
+                contentWrapper.innerHTML = content;
+                contentContainer.appendChild(contentWrapper);
+
+                // هایلایت کردن کلمات کلیدی
+                highlightKeywords();
+
+                // مدیریت رسانه‌ها
+                handleMediaElements();
+
+                // اضافه کردن دکمه اشتراک‌گذاری
+                addShareButton(post);
+
+                // مدیریت ریسپانسیو بودن
+                setupResponsiveHandling();
+
+                // بخش نظرات غیرفعال شده است
+                // await loadAndDisplayComments(post);
+
+            } catch (error) {
+                console.error('خطا:', error);
+                alert('مشکلی در بارگذاری مقاله پیش آمد.');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // بررسی تم ذخیره شده در هنگام بارگذاری صفحه
+        document.addEventListener('DOMContentLoaded', () => {
+            // بررسی تم ذخیره شده با کوکی
+            const savedTheme = getCookie('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+
+            // به‌روزرسانی متن دکمه تم
+            updateThemeButtonText();
+
+            // رویداد تغییر تم
+            const themeToggle = document.querySelector('.theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+
+            // بارگذاری مقاله
+            loadArticle();
+        });
+
+        // به‌روزرسانی متن دکمه تم
+        function updateThemeButtonText() {
+            const textSpan = document.querySelector('.theme-toggle-text');
+            if (textSpan) {
+                const isDark = document.documentElement.classList.contains('dark-theme');
+                textSpan.textContent = isDark ? 'تم روشن' : 'تم تاریک';
+            }
+        }
+
+        // تغییر تم
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-theme');
+
+            // ذخیره تنظیمات تم با استفاده از کوکی امن و localStorage
+            const isDark = document.documentElement.classList.contains('dark-theme');
+            setCookie('theme', isDark ? 'dark' : 'light', 365);
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+            // به‌روزرسانی متن دکمه
+            updateThemeButtonText();
+
+            // اعمال تغییرات به عناصر خاص برای آپدیت بدون نیاز به رفرش
+            applyThemeToElements(isDark);
+        }
+
+        // اعمال تم به عناصر خاص بدون نیاز به رفرش صفحه
+        function applyThemeToElements(isDark) {
+            // بروزرسانی رنگ‌های عناصر مختلف
+            const elements = {
+                '.post': isDark ? { 'background-color': 'var(--card-bg)', 'border': '1px solid var(--border-color)' } : { 'background-color': 'white', 'border': 'none' },
+                '.post-detail': isDark ? { 'background-color': 'var(--card-bg)', 'border': '1px solid var(--border-color)' } : { 'background-color': 'white', 'border': 'none' },
+                '.site-header': isDark ? { 'background-color': 'var(--header-bg)' } : { 'background-color': 'rgb(252, 252, 252, 0.95)' },
+                '.search-container input': isDark ? { 'background-color': 'var(--search-bg)', 'color': 'var(--text-color)' } : { 'background-color': 'white', 'color': 'var(--text-color)' },
+                '.post-content pre': isDark ? { 'background-color': 'var(--code-bg)', 'color': '#e2e8f0' } : { 'background-color': '#f5f5f5', 'color': '#24292e' },
+                '.share-btn': isDark ? { 'background-color': 'var(--share-btn-bg)' } : { 'background-color': 'white' },
+                'mark': isDark ? { 'background-color': 'rgba(56, 189, 248, 0.25)', 'color': '#fff' } : { 'background-color': 'var(--highlight-color)', 'color': 'inherit' },
+            };
+
+            // اعمال تغییرات به هر گروه از عناصر
+            for (const [selector, styles] of Object.entries(elements)) {
+                document.querySelectorAll(selector).forEach(el => {
+                    for (const [prop, value] of Object.entries(styles)) {
+                        el.style[prop] = value;
+                    }
+                });
+            }
+        }
+
+        // تنظیم کوکی‌های امن با HttpOnly
+        function setCookie(name, value, days) {
+            const secure = location.protocol === 'https:' ? '; Secure' : '';
+            const expires = days ? `; expires=${new Date(Date.now() + days * 86400000).toUTCString()}` : '';
+
+            document.cookie = `${name}=${encodeURIComponent(value)}${expires}; path=/; SameSite=Strict${secure}`;
+        }
+
+        // دریافت کوکی
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+            return null;
+        }
+
+        getArticleData();
+
+        async function generatePDF(article) {
+            // استفاده از کتابخانه jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // تنظیم متن راست به چپ
+            doc.setFont("Arial", "normal");
+            doc.setLanguage("fa");
+            doc.setR2L(true);
+
+            // افزودن عنوان
+            doc.setFontSize(18);
+            doc.text(article.title, 200, 20, { align: 'right' });
+
+            // افزودن اطلاعات نویسنده و تاریخ
+            doc.setFontSize(12);
+            doc.text(`نویسنده: ${article.author} | تاریخ: ${article.date}`, 200, 30, { align: 'right' });
+
+            // پردازش محتوا - حذف تگ‌های HTML
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = article.content;
+            const contentText = tempDiv.textContent || tempDiv.innerText || "";
+
+            // افزودن محتوا با شکستن خطوط
+            doc.setFontSize(10);
+            const textLines = doc.splitTextToSize(contentText, 180);
+            doc.text(textLines, 200, 45, { align: 'right' });
+
+            // ذخیره فایل
+            doc.save(`${article.title}.pdf`);
+        }
+
+        function addArticleSchema(article) {
+                    // ایجاد اسکیمای مقاله به صورت آبجکت JSON
+                    const schemaObject = {
+                        "@context": "https://schema.org",
+                        "@type": "Article",
+                        "headline": article.title || '',
+                        "datePublished": article.date || '',
+                        "author": {
+                            "@type": "Person",
+                            "name": article.author || ''
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "وبلاگ امنیت وب",
+                            "url": window.location.origin || 'https://security-blog.repl.co'
+                        },
+                        "description": article.excerpt || '',
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": window.location.href
+                        }
+                    };
+
+                    // اضافه کردن تصویر اگر وجود دارد
+                    if (article.image) {
+                        schemaObject.image = article.image;
+                    }
+
+                    // تبدیل آبجکت به رشته JSON
+                    const schemaJson = JSON.stringify(schemaObject, null, 2);
+
+                    // ساخت تگ اسکریپت برای اضافه کردن به head
+                    const script = document.createElement('script');
+                    script.type = 'application/ld+json';
+                    script.textContent = schemaJson;
+
+                    // حذف اسکیمای قبلی اگر وجود دارد
+                    const existingSchema = document.querySelector('script[type="application/ld+json"]');
+                    if (existingSchema) {
+                        existingSchema.remove();
+                    }
+
+                    // اضافه کردن اسکیما به head
+                    document.head.appendChild(script);
+                }
+    </script>
+
+    <!-- بخش نظرات غیرفعال شده است -->
+    <!-- <script src="comments.js"></script> -->
+</body>
+</html>

@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>مقاله | وبلاگ من</title>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="مقاله در وبلاگ من">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+</head>
+
+<body>
+
+    <header class="site-header container">
+        <a href="index.html" class="logo">وبلاگ من</a>
+    </header>
+
+    <main class="site-main container">
+        <!-- جزئیات مقاله -->
+        <article id="article-content" class="post-detail fade-in" data-post-id="post-1">
+            <a href="index.html" class="button back-button">◀ بازگشت به صفحه اصلی</a>
+            <h1 id="article-title"></h1>
+            <p id="article-meta" class="post-meta"></p>
+            <div id="article-body" class="post-content"></div>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <span>© ۱۴۰۴ وبلاگ افزایش آگاهی عمومی</span>
+                    <span>|</span>
+                    <span>ساخته شده با هوش مصنوعی</span>
+                    <span>|</span>
+                    <span>توسعه مداوم با AI</span>
+                </div>
+                <div class="footer-contact">
+                    <a href="https://t.me/http_users" target="_blank" class="telegram-link">
+                        <span class="telegram-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--accent-color)" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M22.0717 3.57277C21.8063 3.34026 21.4482 3.25452 21.1168 3.34026L2.83748 9.34026C2.39498 9.46725 2.09123 9.83027 2.01873 10.2866C1.95061 10.7428 2.13436 11.1764 2.50311 11.4153L6.57886 14.2053V19.9991C6.57886 20.4553 6.82936 20.8678 7.22561 21.0928C7.4186 21.1991 7.63873 21.2491 7.85323 21.2491C8.0771 21.2491 8.29685 21.1928 8.4961 21.0928L12.5719 18.9303L15.5781 21.5553C15.8622 21.8116 16.2396 21.9491 16.6296 21.9491C16.7156 21.9491 16.8081 21.9428 16.8969 21.9241C17.3781 21.8178 17.7781 21.5053 17.9656 21.0616L22.2781 4.56152C22.4031 4.23027 22.3281 3.8053 22.0717 3.57277ZM16.5594 6.18652L8.6156 13.4678L4.97686 10.9678L16.5594 6.18652ZM8.57611 19.2491V15.6928L10.7219 17.6241L8.57611 19.2491ZM16.6296 19.9491L9.41735 13.5116L20.6343 5.13027L16.6296 19.9491Z" fill="currentColor"/>
+                            </svg>
+                        </span>
+                        <span>دسترسی به کانال تلگرام</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- دکمه تغییر تم -->
+    <div class="theme-toggle">
+        <div class="theme-toggle-icon">
+            <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 1V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 21V23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4.22 4.22L5.64 5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18.36 18.36L19.78 19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M1 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M21 12H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4.22 19.78L5.64 18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 12.79C20.8427 14.4922 20.2037 16.1144 19.1582 17.4668C18.1126 18.8192 16.7025 19.8458 15.0957 20.4265C13.4889 21.0073 11.7467 21.1181 10.0797 20.7461C8.41267 20.3741 6.88338 19.5345 5.67418 18.3254C4.46497 17.1162 3.62545 15.5869 3.25349 13.9199C2.88153 12.2529 2.99227 10.5106 3.57303 8.90386C4.15378 7.29711 5.18035 5.88696 6.53278 4.84132C7.8852 3.79569 9.50739 3.15683 11.21 3C10.2134 4.34827 9.73385 6.00945 9.85853 7.68141C9.9832 9.35338 10.7038 10.9251 11.8894 12.1106C13.0749 13.2961 14.6466 14.0168 16.3186 14.1415C17.9906 14.2662 19.6517 13.7866 21 12.79Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <span class="theme-toggle-text">تغییر تم</span>
+    </div>
+
+    <script>
+        // کد اصلی
+            comments: [],
+            currentPostId: null,
+
+            // دریافت نظرات
+            loadComments: async function(postId) {
+                try {
+                    this.currentPostId = postId;
+                    const response = await fetch('comments.json');
+                    if (!response.ok) throw new Error('خطا در دریافت نظرات');
+
+                    const commentsData = await response.json();
+                    const postComments = commentsData.find(pc => pc.postId === postId);
+
+                    this.comments = postComments ? postComments.comments : [];
+                    return this.comments;
+                } catch (error) {
+                    console.error('خطا در بارگذاری نظرات:', error);
+                    this.comments = [];
+                    return [];
+                }
+            },
+
+            // افزودن نظر جدید
+            addComment: async function(comment) {
+                try {
+                    // ایجاد یک شناسه منحصر به فرد برای نظر جدید
+                    comment.id = 'comment-' + Date.now();
+                    comment.date = 'هم اکنون';
+                    comment.replies = [];
+
+                    // افزودن به آرایه محلی
+                    this.comments.unshift(comment);
+
+                    // ذخیره در فایل (در یک محیط واقعی به API ارسال می‌شود)
+                    await this.saveComments();
+
+                    return comment;
+                } catch (error) {
+                    console.error('خطا در افزودن نظر:', error);
+                    return null;
+                }
+            },
+
+            // افزودن پاسخ به یک نظر
+            addReply: async function(commentId, reply) {
+                try {
+                    // پیدا کردن نظر مورد نظر
+                    const comment = this.comments.find(c => c.id === commentId);
+                    if (!comment) return null;
+
+                    // ایجاد یک شناسه منحصر به فرد برای پاسخ
+                    reply.id = 'reply-' + Date.now();
+                    reply.date = 'هم اکنون';
+
+                    // افزودن پاسخ به نظر
+                    comment.replies.push(reply);
+
+                    // ذخیره در فایل
+                    await this.saveComments();
+
+                    return reply;
+                } catch (error) {
+                    console.error('خطا در افزودن پاسخ:', error);
+                    return null;
+                }
+            },
+
+            // ویرایش نظر
+            editComment: async function(commentId, newText) {
+                try {
+                    // پیدا کردن نظر مورد نظر
+                    const comment = this.comments.find(c => c.id === commentId);
+                    if (!comment) return false;
+
+                    // ویرایش متن نظر
+                    comment.text = newText;
+                    comment.edited = true;
+
+                    // ذخیره در فایل
+                    await this.saveComments();
+
+                    return true;
+                } catch (error) {
+                    console.error('خطا در ویرایش نظر:', error);
+                    return false;
+                }
+            },
+
+            // حذف نظر
+            deleteComment: async function(commentId) {
+                try {
+                    // پیدا کردن و حذف نظر
+                    const index = this.comments.findIndex(c => c.id === commentId);
+                    if (index === -1) return false;
+
+                    this.comments.splice(index, 1);
+
+                    // ذخیره در فایل
+                    await this.saveComments();
+
+                    return true;
+                } catch (error) {
+                    console.error('خطا در حذف نظر:', error);
+                    return false;
+                }
+            },
+
+            // حذف پاسخ
+            deleteReply: async function(commentId, replyId) {
+                try {
+                    // پیدا کردن نظر مورد نظر
+                    const comment = this.comments.find(c => c.id === commentId);
+                    if (!comment) return false;
+
+                    // پیدا کردن و حذف پاسخ
+                    const replyIndex = comment.replies.findIndex(r => r.id === replyId);
+                    if (replyIndex === -1) return false;
+
+                    comment.replies.splice(replyIndex, 1);
+
+                    // ذخیره در فایل
+                    await this.saveComments();
+
+                    return true;
+                } catch (error) {
+                    console.error('خطا در حذف پاسخ:', error);
+                    return false;
+                }
+            },
+
+            // ذخیره نظرات در فایل
+            saveComments: async function() {
+                try {
+                    // در یک محیط واقعی، این کد به یک API ارسال می‌شود
+                    // اما اینجا فقط در کنسول نمایش می‌دهیم
+                    console.log('نظرات ذخیره شد:', this.comments);
+                    return true;
+                } catch (error) {
+                    console.error('خطا در ذخیره نظرات:', error);
+                    return false;
+                }
+            }
+        };
+
+        // بررسی تم ذخیره شده در هنگام بارگذاری صفحه
+        document.addEventListener('DOMContentLoaded', () => {
+    // بررسی تم ذخیره شده
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme');
+    }
+            // تنظیم تم بر اساس ذخیره شده
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+
+            // به‌روزرسانی متن دکمه تم
+            updateThemeButtonText();
+
+            // رویداد تغییر تم
+            const themeToggle = document.querySelector('.theme-toggle');
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+
+            // بارگذاری مقاله
+            loadArticle();
+        });
+
+        // به‌روزرسانی متن دکمه تم
+        function updateThemeButtonText() {
+            const textSpan = document.querySelector('.theme-toggle-text');
+            if (textSpan) {
+                const isDark = document.documentElement.classList.contains('dark-theme');
+                textSpan.textContent = isDark ? 'تم روشن' : 'تم تاریک';
+            }
+        }
+
+        // تغییر تم
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark-theme');
+
+            // ذخیره تنظیمات تم
+            const isDark = document.documentElement.classList.contains('dark-theme');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+
+            // به‌روزرسانی متن دکمه
+            updateThemeButtonText();
+        }
+
+        // بارگذاری و نمایش مقاله
+        async function loadArticle() {
+            try {
+                // دریافت شناسه مقاله از پارامترهای URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const postId = urlParams.get('id');
+
+                if (!postId) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // دریافت مقالات
+                const response = await fetch('posts.json');
+                if (!response.ok) throw new Error('خطا در دریافت مقالات');
+
+                const posts = await response.json();
+                const post = posts.find(p => p.id === postId);
+
+                if (!post) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // تنظیم عنوان صفحه
+                document.title = post.title + ' | وبلاگ من';
+
+                // نمایش اطلاعات مقاله
+                const titleElement = document.getElementById('article-title');
+                titleElement.innerHTML = `<mark>${post.title}</mark>`; // مارک دار کردن عنوان
+                document.getElementById('article-meta').textContent = `تاریخ: ${post.date} | نویسنده: ${post.author}`;
+
+                const contentContainer = document.getElementById('article-body');
+                contentContainer.innerHTML = ''; // پاک کردن محتوای قبلی
+
+                // اضافه کردن تصویر شاخص اگر وجود داشته باشد
+                if (post.image) {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'post-featured-image';
+
+                    const img = document.createElement('img');
+                    img.src = post.image;
+                    img.alt = post.title;
+                    img.loading = 'eager';
+
+                    imgContainer.appendChild(img);
+                    contentContainer.appendChild(imgContainer);
+                }
+
+                // افزودن محتوای اصلی مقاله
+                const contentWrapper = document.createElement('div');
+                contentWrapper.className = 'post-content-wrapper';
+
+                // حذف تصاویر تکراری از محتوا اگر تصویر شاخص وجود دارد
+                let content = post.content;
+                if (post.image) {
+                    // حذف اولین تگ img در محتوا اگر تصویر شاخص وجود دارد
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = content;
+
+                    const firstImg = tempDiv.querySelector('img');
+                    if (firstImg && firstImg.src && firstImg.src.includes(post.image.split('/').pop())) {
+                        firstImg.parentElement.removeChild(firstImg);
+                    }
+
+                    content = tempDiv.innerHTML;
+                }
+
+                contentWrapper.innerHTML = content;
+                contentContainer.appendChild(contentWrapper);
+
+                // هایلایت کردن کلمات کلیدی
+                highlightKeywords();
+
+                // مدیریت رسانه‌ها
+                handleMediaElements();
+
+                // اضافه کردن دکمه اشتراک‌گذاری
+                addShareButton(post);
+
+                // مدیریت ریسپانسیو بودن
+                setupResponsiveHandling();
+
+                // بارگذاری و نمایش نظرات
+                await loadAndDisplayComments(post);
+
+            } catch (error) {
+                console.error('خطا:', error);
+                alert('مشکلی در بارگذاری مقاله پیش آمد.');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // تنظیم ریسپانسیو
+        function setupResponsiveHandling() {
+            const handleResize = () => {
+                const width = window.innerWidth;
+                const article = document.getElementById('article-content');
+                if (!article) return;
+
+                if (width <= 480) {
+                    article.classList.add('mobile-view');
+                } else if (width <= 700) {
+                    article.classList.add('tablet-view');
+                    article.classList.remove('mobile-view');
+                } else {
+                    article.classList.remove('tablet-view', 'mobile-view');
+                }
+            };
+
+            // اجرا در بارگذاری و تغییر اندازه پنجره
+            handleResize();
+            window.addEventListener('resize', handleResize);
+        }
+
+        // هایلایت کردن کلمات کلیدی
+        function highlightKeywords() {
+            // لیستی از کلمات کلیدی
+            const keywords = ['HttpOnly', 'XSS', 'CSRF', 'Security', 'امنیت', 'کوکی', 'جلسه', 'حمله'];
+
+            const content = document.getElementById('article-body');
+            if (!content) return;
+
+            // پیمایش در کل کلمات کلیدی
+            keywords.forEach(keyword => {
+                // ایجاد عبارت باقاعده برای پیدا کردن کلمات کلیدی
+                const regex = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+
+                // پیدا کردن و هایلایت کردن کلمات کلیدی در محتوا
+                content.querySelectorAll('p, li').forEach(el => {
+                    if (!el.querySelector('code, pre, mark')) { // اگر شامل کد یا علامت‌گذاری قبلی نباشد
+                        el.innerHTML = el.innerHTML.replace(regex, '<mark>$1</mark>');
+                    }
+                });
+            });
+        }
+
+        // مدیریت رسانه‌ها در محتوای مقاله
+        function handleMediaElements() {
+            // لود تنبل (lazy loading) تصاویر
+            document.querySelectorAll('#article-body img').forEach(img => {
+                img.loading = 'lazy';
+
+                // افزودن کلاس برای انیمیشن ظهور
+                img.classList.add('lazy-image');
+
+                // افزودن قابلیت بزرگنمایی با کلیک
+                img.addEventListener('click', () => {
+                    showImageViewer(img.src, img.alt);
+                });
+            });
+
+            // افزودن قابلیت کپی به بلوک‌های کد
+            document.querySelectorAll('#article-body pre').forEach(pre => {
+                const codeBlock = pre.querySelector('code') || pre;
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-code-button';
+                copyButton.textContent = 'کپی کد';
+                copyButton.addEventListener('click', () => {
+                    navigator.clipboard.writeText(codeBlock.textContent)
+                        .then(() => {
+                            const originalText = copyButton.textContent;
+                            copyButton.textContent = 'کپی شد! ✓';
+                            copyButton.style.backgroundColor = '#10b981'; // رنگ سبز موفقیت
+                            setTimeout(() => {
+                                copyButton.textContent = originalText;
+                                copyButton.style.backgroundColor = '';
+                            }, 2000);
+                        })
+                        .catch(err => console.error('خطا در کپی کردن:', err));
+                });
+
+                pre.style.position = 'relative';
+                pre.appendChild(copyButton);
+            });
+        }
+
+        // نمایش ویوئر تصویر
+        function showImageViewer(src, alt) {
+            // ایجاد یک لایه مودال برای نمایش تصویر
+            const viewer = document.createElement('div');
+            viewer.className = 'image-viewer';
+
+            const img = document.createElement('img');
+            img.src = src;
+            img.alt = alt || 'تصویر بزرگ';
+
+            const closeButton = document.createElement('button');
+            closeButton.className = 'close-button';
+            closeButton.innerHTML = '&times;';
+            closeButton.setAttribute('aria-label', 'بستن');
+
+            viewer.appendChild(img);
+            viewer.appendChild(closeButton);
+
+            document.body.appendChild(viewer);
+
+            // جلوگیری از اسکرول صفحه هنگام باز بودن ویوئر
+            document.body.style.overflow = 'hidden';
+
+            // رویداد بستن ویوئر
+            closeButton.addEventListener('click', () => {
+                document.body.removeChild(viewer);
+                document.body.style.overflow = '';
+            });
+
+            // بستن با کلیک بیرون از تصویر
+            viewer.addEventListener('click', e => {
+                if (e.target === viewer) {
+                    document.body.removeChild(viewer);
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+
+        // اضافه کردن دکمه اشتراک‌گذاری
+        function addShareButton(post) {
+            const contentContainer = document.getElementById('article-body');
+            if (!contentContainer) return;
+
+            // ایجاد باکس اشتراک‌گذاری
+            const shareBox = document.createElement('div');
+            shareBox.className = 'share-box';
+
+            const shareText = document.createElement('p');
+            shareText.textContent = 'این مقاله را به اشتراک بگذارید:';
+
+            const shareBtns = document.createElement('div');
+            shareBtns.className = 'share-buttons';
+
+            // دکمه کپی لینک
+            const copyLink = document.createElement('button');
+            copyLink.className = 'share-btn copy-link';
+            copyLink.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg><span>کپی لینک</span>';
+
+            copyLink.addEventListener('click', () => {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    copyLink.querySelector('span').textContent = 'کپی شد!';
+                    setTimeout(() => {
+                        copyLink.querySelector('span').textContent = 'کپی لینک';
+                    }, 2000);
+                });
+            });
+
+            // دکمه تلگرام
+            const telegramShare = document.createElement('a');
+            telegramShare.className = 'share-btn telegram-share';
+            telegramShare.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M22.0717 3.57277C21.8063 3.34026 21.4482 3.25452 21.1168 3.34026L2.83748 9.34026C2.39498 9.46725 2.09123 9.83027 2.01873 10.2866C1.95061 10.7428 2.13436 11.1764 2.50311 11.4153L6.57886 14.2053V19.9991C6.57886 20.4553 6.82936 20.8678 7.22561 21.0928C7.4186 21.1991 7.63873 21.2491 7.85323 21.2491C8.0771 21.2491 8.29685 21.1928 8.4961 21.0928L12.5719 18.9303L15.5781 21.5553C15.8622 21.8116 16.2396 21.9491 16.6296 21.9491C16.7156 21.9491 16.8081 21.9428 16.8969 21.9241C17.3781 21.8178 17.7781 21.5053 17.9656 21.0616L22.2781 4.56152C22.4031 4.23027 22.3281 3.8053 22.0717 3.57277ZM16.5594 6.18652L8.6156 13.4678L4.97686 10.9678L16.5594 6.18652ZM8.57611 19.2491V15.6928L10.7219 17.6241L8.57611 19.2491ZM16.6296 19.9491L9.41735 13.5116L20.6343 5.13027L16.6296 19.9491Z" fill="currentColor"/></svg><span>تلگرام</span>';
+            telegramShare.href = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`;
+            telegramShare.target = '_blank';
+            telegramShare.rel = 'noopener noreferrer';
+
+            // دکمه توییتر
+            const twitterShare = document.createElement('a');
+            twitterShare.className = 'share-btn twitter-share';
+            twitterShare.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg><span>توییتر</span>';
+            twitterShare.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`;
+            twitterShare.target = '_blank';
+            twitterShare.rel = 'noopener noreferrer';
+
+            // دکمه واتساپ
+            const whatsappShare = document.createElement('a');
+            whatsappShare.className = 'share-btn whatsapp-share';
+            whatsappShare.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.101-.473-.15-.673.15-.197.295-.771.964-.944 1.162-.175.195-.349.21-.646.075-.3-.15-1.263-.465-2.403-1.485-.888-.795-1.484-1.77-1.66-2.07-.174-.3-.019-.465.13-.615.136-.135.301-.345.451-.523.146-.181.194-.301.297-.496.1-.21.049-.375-.025-.524-.075-.15-.672-1.62-.922-2.206-.24-.584-.487-.51-.672-.51-.172-.015-.371-.015-.571-.015-.2 0-.523.074-.797.359-.273.3-1.045 1.02-1.045 2.475s1.07 2.865 1.219 3.075c.149.195 2.105 3.195 5.1 4.485.714.3 1.27.48 1.704.629.714.227 1.365.195 1.88.121.574-.091 1.767-.721 2.016-1.426.255-.705.255-1.29.18-1.425-.074-.135-.27-.21-.57-.345m-5.446 7.443h-.016c-1.77 0-3.524-.48-5.055-1.38l-.36-.214-3.75.975 1.005-3.645-.239-.375c-.99-1.576-1.516-3.391-1.516-5.26 0-5.445 4.455-9.885 9.942-9.885 2.654 0 5.145 1.035 7.021 2.91 1.875 1.859 2.909 4.35 2.909 6.99-.004 5.444-4.46 9.885-9.935 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c1.746.943 3.71 1.444 5.71 1.447h.006c6.585 0 11.946-5.336 11.949-11.896 0-3.176-1.24-6.165-3.495-8.411"/></svg><span>واتساپ</span>';
+            whatsappShare.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(post.title + ' ' + window.location.href)}`;
+            whatsappShare.target = '_blank';
+            whatsappShare.rel = 'noopener noreferrer';
+
+            // دکمه لینکدین
+            const linkedinShare = document.createElement('a');
+            linkedinShare.className = 'share-btn linkedin-share';
+            linkedinShare.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg><span>لینکدین</span>';
+            linkedinShare.href = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(window.location.href)}&title=${encodeURIComponent(post.title)}`;
+            linkedinShare.target = '_blank';
+            linkedinShare.rel = 'noopener noreferrer';
+
+            shareBtns.appendChild(copyLink);
+            shareBtns.appendChild(telegramShare);
+            shareBtns.appendChild(twitterShare);
+            shareBtns.appendChild(whatsappShare);
+            shareBtns.appendChild(linkedinShare);
+
+            shareBox.appendChild(shareText);
+            shareBox.appendChild(shareBtns);
+
+            contentContainer.appendChild(shareBox);
+        }
+
+        // بارگذاری و نمایش نظرات
+        async function loadAndDisplayComments(post) {
+            const contentContainer = document.getElementById('article-body');
+            if (!contentContainer) return;
+
+            // ایجاد بخش نظرات
+            const commentsSection = document.createElement('div');
+            commentsSection.className = 'comments-section';
+
+            const commentsTitle = document.createElement('h3');
+            commentsTitle.textContent = 'نظرات کاربران';
+            commentsTitle.className = 'comments-title';
+
+            const commentsContainer = document.createElement('div');
+            commentsContainer.className = 'comments-container';
+            commentsContainer.id = 'comments-container';
+
+            commentsSection.appendChild(commentsTitle);
+            commentsSection.appendChild(commentsContainer);
+
+            // بارگذاری نظرات از فایل JSON
+            const comments = await CommentsManager.loadComments(post.id);
+
+            // نمایش نظرات
+            renderComments(comments, commentsContainer);
+
+            // اضافه کردن فرم ارسال نظر
+            const commentForm = createCommentForm();
+            commentsSection.appendChild(commentForm);
+
+            contentContainer.appendChild(commentsSection);
+        }
+
+        // نمایش نظرات
+        function renderComments(comments, container) {
+            container.innerHTML = '';
+
+            if (comments.length === 0) {
+                const noComments = document.createElement('div');
+                noComments.className = 'no-comments';
+                noComments.textContent = 'هنوز نظری برای این مقاله ثبت نشده است. اولین نفری باشید که نظر می‌دهد!';
+                container.appendChild(noComments);
+                return;
+            }
+
+            comments.forEach(comment => {
+                const commentElement = createCommentElement(comment);
+                container.appendChild(commentElement);
+            });
+        }
+
+        // ایجاد المان نظر
+        function createCommentElement(comment) {
+            const commentElement = document.createElement('div');
+            commentElement.className = 'comment';
+            commentElement.id = comment.id;
+
+            const commentHeader = document.createElement('div');
+            commentHeader.className = 'comment-header';
+
+            const authorSpan = document.createElement('span');
+            authorSpan.className = 'comment-author';
+            authorSpan.textContent = comment.author;
+
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'comment-date';
+            dateSpan.textContent = comment.date + (comment.edited ? ' (ویرایش شده)' : '');
+
+            const actionsSpan = document.createElement('span');
+            actionsSpan.className = 'comment-actions';
+
+            // اضافه کردن دکمه‌های ویرایش و حذف برای نظر
+            const replyBtn = document.createElement('button');
+            replyBtn.className = 'action-btn reply-btn';
+            replyBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h10a8 8 0 1 1-8 8v-3"></path><path d="M3 10l6-6"></path><path d="M3 10l6 6"></path></svg>';
+            replyBtn.title = 'پاسخ به این نظر';
+            replyBtn.addEventListener('click', () => showReplyForm(comment.id));
+
+            const editBtn = document.createElement('button');
+            editBtn.className = 'action-btn edit-btn';
+            editBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>';
+            editBtn.title = 'ویرایش این نظر';
+            editBtn.addEventListener('click', () => showEditForm(comment.id, comment.text));
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'action-btn delete-btn';
+            deleteBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>';
+            deleteBtn.title = 'حذف این نظر';
+            deleteBtn.addEventListener('click', () => confirmDelete(comment.id));
+
+            actionsSpan.appendChild(replyBtn);
+            actionsSpan.appendChild(editBtn);
+            actionsSpan.appendChild(deleteBtn);
+
+            commentHeader.appendChild(authorSpan);
+            commentHeader.appendChild(dateSpan);
+            commentHeader.appendChild(actionsSpan);
+
+            const commentBody = document.createElement('div');
+            commentBody.className = 'comment-body';
+            commentBody.textContent = comment.text;
+
+            commentElement.appendChild(commentHeader);
+            commentElement.appendChild(commentBody);
+
+            // اضافه کردن پاسخ‌ها اگر وجود داشته باشند
+            if (comment.replies && comment.replies.length > 0) {
+                const repliesContainer = document.createElement('div');
+                repliesContainer.className = 'replies-container';
+
+                comment.replies.forEach(reply => {
+                    const replyElement = createReplyElement(reply, comment.id);
+                    repliesContainer.appendChild(replyElement);
+                });
+
+                commentElement.appendChild(repliesContainer);
+            }
+
+            return commentElement;
+        }
+
+        // ایجاد المان پاسخ به نظر
+        function createReplyElement(reply, parentId) {
+            const replyElement = document.createElement('div');
+            replyElement.className = 'reply';
+            replyElement.id = reply.id;
+
+            const replyHeader = document.createElement('div');
+            replyHeader.className = 'reply-header';
+
+            const authorSpan = document.createElement('span');
+            authorSpan.className = 'reply-author';
+            authorSpan.textContent = reply.author;
+
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'reply-date';
+            dateSpan.textContent = reply.date + (reply.edited ? ' (ویرایش شده)' : '');
+
+            const actionsSpan = document.createElement('span');
+            actionsSpan.className = 'reply-actions';
+
+            // دکمه‌های ویرایش و حذف پاسخ
+            const editBtn = document.createElement('button');
+            editBtn.className = 'action-btn edit-btn';
+            editBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>';
+            editBtn.title = 'ویرایش این پاسخ';
+            editBtn.addEventListener('click', () => showEditReplyForm(parentId, reply.id, reply.text));
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'action-btn delete-btn';
+            deleteBtn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><path d="M10 11v6"></path><path d="M14 11v6"></path></svg>';
+            deleteBtn.title = 'حذف این پاسخ';
+            deleteBtn.addEventListener('click', () => confirmDeleteReply(parentId, reply.id));
+
+            actionsSpan.appendChild(editBtn);
+            actionsSpan.appendChild(deleteBtn);
+
+            replyHeader.appendChild(authorSpan);
+            replyHeader.appendChild(dateSpan);
+            replyHeader.appendChild(actionsSpan);
+
+            const replyBody = document.createElement('div');
+            replyBody.className = 'reply-body';
+            replyBody.textContent = reply.text;
+
+            replyElement.appendChild(replyHeader);
+            replyElement.appendChild(replyBody);
+
+            return replyElement;
+        }
+
+        // ایجاد فرم ارسال نظر
+        function createCommentForm() {
+            const commentForm = document.createElement('form');
+            commentForm.className = 'comment-form';
+            commentForm.id = 'comment-form';
+
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.id = 'comment-name';
+            nameInput.placeholder = 'نام شما';
+            nameInput.required = true;
+
+            const commentTextarea = document.createElement('textarea');
+            commentTextarea.id = 'comment-text';
+            commentTextarea.placeholder = 'نظر خود را بنویسید...';
+            commentTextarea.rows = 4;
+            commentTextarea.required = true;
+
+            const submitButton = document.createElement('button');
+            submitButton.type = 'submit';
+            submitButton.className = 'button comment-submit';
+            submitButton.textContent = 'ارسال نظر';
+
+            // افزودن فیلدها به فرم
+            commentForm.appendChild(nameInput);
+            commentForm.appendChild(commentTextarea);
+            commentForm.appendChild(submitButton);
+
+            // افزودن رویداد ارسال فرم
+            commentForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // دریافت مقادیر فرم
+                const name = nameInput.value.trim();
+                const commentText = commentTextarea.value.trim();
+
+                if (name && commentText) {
+                    // ایجاد نظر جدید
+                    const newComment = {
+                        author: name,
+                        text: commentText
+                    };
+
+                    // افزودن نظر به لیست نظرات
+                    const comment = await CommentsManager.addComment(newComment);
+
+                    if (comment) {
+                        // بازسازی لیست نظرات
+                        const commentsContainer = document.getElementById('comments-container');
+                        renderComments(CommentsManager.comments, commentsContainer);
+
+                        // پاک کردن فرم
+                        commentForm.reset();
+
+                        // نمایش پیام موفقیت
+                        showSuccessMessage(commentForm, 'نظر شما با موفقیت ثبت شد.');
+                    }
+                }
+            });
+
+            return commentForm;
+        }
+
+        // نمایش فرم پاسخ به نظر
+        function showReplyForm(commentId) {
+            // حذف سایر فرم‌های پاسخ که ممکن است قبلاً باز شده باشند
+            document.querySelectorAll('.reply-form').forEach(form => form.remove());
+
+            const commentElement = document.getElementById(commentId);
+            if (!commentElement) return;
+
+            const replyForm = document.createElement('form');
+            replyForm.className = 'reply-form';
+
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.placeholder = 'نام شما';
+            nameInput.required = true;
+
+            const replyTextarea = document.createElement('textarea');
+            replyTextarea.placeholder = 'پاسخ خود را بنویسید...';
+            replyTextarea.rows = 3;
+            replyTextarea.required = true;
+
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'form-buttons';
+
+            const submitButton = document.createElement('button');
+            submitButton.type = 'submit';
+            submitButton.className = 'button reply-submit';
+            submitButton.textContent = 'ارسال پاسخ';
+
+            const cancelButton = document.createElement('button');
+            cancelButton.type = 'button';
+            cancelButton.className = 'button cancel-btn';
+            cancelButton.textContent = 'انصراف';
+            cancelButton.addEventListener('click', () => replyForm.remove());
+
+            buttonsContainer.appendChild(submitButton);
+            buttonsContainer.appendChild(cancelButton);
+
+            replyForm.appendChild(nameInput);
+            replyForm.appendChild(replyTextarea);
+            replyForm.appendChild(buttonsContainer);
+
+            // رویداد ارسال فرم پاسخ
+            replyForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const name = nameInput.value.trim();
+                const text = replyTextarea.value.trim();
+
+                if (name && text) {
+                    const reply = {
+                        author: name,
+                        text: text
+                    };
+
+                    // افزودن پاسخ به نظر
+                    const newReply = await CommentsManager.addReply(commentId, reply);
+
+                    if (newReply) {
+                        // بازسازی لیست نظرات
+                        const commentsContainer = document.getElementById('comments-container');
+                        renderComments(CommentsManager.comments, commentsContainer);
+
+                        // حذف فرم پاسخ
+                        replyForm.remove();
+                    }
+                }
+            });
+
+            // اضافه کردن فرم پاسخ بعد از نظر
+            commentElement.appendChild(replyForm);
+
+            // فوکوس روی فیلد نام
+            nameInput.focus();
+        }
+
+        // نمایش فرم ویرایش نظر
+        function showEditForm(commentId, currentText) {
+            const commentElement = document.getElementById(commentId);
+            if (!commentElement) return;
+
+            const commentBody = commentElement.querySelector('.comment-body');
+            if (!commentBody) return;
+
+            // ذخیره متن فعلی
+            const originalText = commentBody.textContent;
+
+            // ایجاد فرم ویرایش
+            const editForm = document.createElement('form');
+            editForm.className = 'edit-form';
+
+            const editTextarea = document.createElement('textarea');
+            editTextarea.value = currentText;
+            editTextarea.rows = 4;
+            editTextarea.required = true;
+
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'form-buttons';
+
+            const saveButton = document.createElement('button');
+            saveButton.type = 'submit';
+            saveButton.className = 'button save-btn';
+            saveButton.textContent = 'ذخیره تغییرات';
+
+            const cancelButton = document.createElement('button');
+            cancelButton.type = 'button';
+            cancelButton.className = 'button cancel-btn';
+            cancelButton.textContent = 'انصراف';
+            cancelButton.addEventListener('click', () => {
+                // بازگرداندن حالت قبلی
+                commentBody.textContent = originalText;
+                commentBody.style.display = 'block';
+                editForm.remove();
+            });
+
+            buttonsContainer.appendChild(saveButton);
+            buttonsContainer.appendChild(cancelButton);
+
+            editForm.appendChild(editTextarea);
+            editForm.appendChild(buttonsContainer);
+
+            // رویداد ارسال فرم ویرایش
+            editForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const newText = editTextarea.value.trim();
+
+                if (newText) {
+                    // ویرایش نظر
+                    const success = await CommentsManager.editComment(commentId, newText);
+
+                    if (success) {
+                        // به‌روزرسانی متن نظر
+                        commentBody.textContent = newText;
+                        commentBody.style.display = 'block';
+
+                        // به‌روزرسانی نشانگر ویرایش
+                        const dateSpan = commentElement.querySelector('.comment-date');
+                        if (dateSpan && !dateSpan.textContent.includes('(ویرایش شده)')) {
+                            dateSpan.textContent += ' (ویرایش شده)';
+                        }
+
+                        // حذف فرم ویرایش
+                        editForm.remove();
+                    }
+                }
+            });
+
+            // مخفی کردن متن نظر و نمایش فرم ویرایش
+            commentBody.style.display = 'none';
+            commentElement.insertBefore(editForm, commentBody.nextSibling);
+
+            // فوکوس روی فیلد متن
+            editTextarea.focus();
+        }
+
+        // نمایش فرم ویرایش پاسخ
+        function showEditReplyForm(commentId, replyId, currentText) {
+            const replyElement = document.getElementById(replyId);
+            if (!replyElement) return;
+
+            const replyBody = replyElement.querySelector('.reply-body');
+            if (!replyBody) return;
+
+            // ذخیره متن فعلی
+            const originalText = replyBody.textContent;
+
+            // ایجاد فرم ویرایش
+            const editForm = document.createElement('form');
+            editForm.className = 'edit-form';
+
+            const editTextarea = document.createElement('textarea');
+            editTextarea.value = currentText;
+            editTextarea.rows = 3;
+            editTextarea.required = true;
+
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.className = 'form-buttons';
+
+            const saveButton = document.createElement('button');
+            saveButton.type = 'submit';
+            saveButton.className = 'button save-btn';
+            saveButton.textContent = 'ذخیره تغییرات';
+
+            const cancelButton = document.createElement('button');
+            cancelButton.type = 'button';
+            cancelButton.className = 'button cancel-btn';
+            cancelButton.textContent = 'انصراف';
+            cancelButton.addEventListener('click', () => {
+                // بازگرداندن حالت قبلی
+                replyBody.textContent = originalText;
+                replyBody.style.display = 'block';
+                editForm.remove();
+            });
+
+            buttonsContainer.appendChild(saveButton);
+            buttonsContainer.appendChild(cancelButton);
+
+            editForm.appendChild(editTextarea);
+            editForm.appendChild(buttonsContainer);
+
+            // رویداد ارسال فرم ویرایش
+            editForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const newText = editTextarea.value.trim();
+
+                if (newText) {
+                    // ویرایش پاسخ
+                    // (برای سادگی فعلاً فقط تغییر در نمایش ایجاد می‌کنیم)
+                    replyBody.textContent = newText;
+                    replyBody.style.display = 'block';
+
+                    // به‌روزرسانی نشانگر ویرایش
+                    const dateSpan = replyElement.querySelector('.reply-date');
+                    if (dateSpan && !dateSpan.textContent.includes('(ویرایش شده)')) {
+                        dateSpan.textContent += ' (ویرایش شده)';
+                    }
+
+                    // حذف فرم ویرایش
+                    editForm.remove();
+                }
+            });
+
+            // مخفی کردن متن پاسخ و نمایش فرم ویرایش
+            replyBody.style.display = 'none';
+            replyElement.insertBefore(editForm, replyBody.nextSibling);
+
+            // فوکوس روی فیلد متن
+            editTextarea.focus();
+        }
+
+        // تایید حذف نظر
+        function confirmDelete(commentId) {
+            if (confirm('آیا از حذف این نظر اطمینان دارید؟')) {
+                // حذف نظر
+                CommentsManager.deleteComment(commentId).then(success => {
+                    if (success) {
+                        // به‌روزرسانی نمایش نظرات
+                        const commentsContainer = document.getElementById('comments-container');
+                        renderComments(CommentsManager.comments, commentsContainer);
+                    }
+                });
+            }
+        }
+
+        // تایید حذف پاسخ
+        function confirmDeleteReply(commentId, replyId) {
+            if (confirm('آیا از حذف این پاسخ اطمینان دارید؟')) {
+                // حذف پاسخ
+                CommentsManager.deleteReply(commentId, replyId).then(success => {
+                    if (success) {
+                        // به‌روزرسانی نمایش نظرات
+                        const commentsContainer = document.getElementById('comments-container');
+                        renderComments(CommentsManager.comments, commentsContainer);
+                    }
+                });
+            }
+        }
+
+        // نمایش پیام موفقیت
+        function showSuccessMessage(element, message) {
+            const successMessage = document.createElement('div');
+            successMessage.className = 'comment-success';
+            successMessage.textContent = message;
+
+            element.parentNode.insertBefore(successMessage, element.nextSibling);
+
+            setTimeout(() => {
+                successMessage.remove();
+            }, 3000);
+        }
+
+        // کد مربوط به کپی لینک
+        const copyLinkBtn = document.getElementById("copy-link-btn");
+        if (copyLinkBtn) {
+            copyLinkBtn.addEventListener("click", function() {
+                const currentUrl = window.location.href;
+                navigator.clipboard.writeText(currentUrl).then(function() {
+                    alert("لینک مقاله کپی شد!");
+                }, function() {
+                    alert("خطا در کپی لینک!");
+                });
+            });
+        }
+
+        // کد مربوط به اشتراک در تلگرام
+        const telegramShareBtn = document.getElementById("telegram-share-btn");
+        if (telegramShareBtn) {
+            telegramShareBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                const currentUrl = encodeURIComponent(window.location.href);
+                const title = encodeURIComponent(document.title);
+                window.open(`https://t.me/share/url?url=${currentUrl}&text=${title}`, '_blank');
+            });
+        }
+
+        // کد مربوط به اشتراک در ایکس (توییتر)
+        const twitterShareBtn = document.getElementById("twitter-share-btn");
+        if (twitterShareBtn) {
+            twitterShareBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                const currentUrl = encodeURIComponent(window.location.href);
+                const title = encodeURIComponent(document.title);
+                window.open(`https://twitter.com/intent/tweet?url=${currentUrl}&text=${title}`, '_blank');
+            });
+        }
+
+        // کد مربوط به اشتراک در فیسبوک
+        const facebookShareBtn = document.getElementById("facebook-share-btn");
+        if (facebookShareBtn) {
+            facebookShareBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                const currentUrl = encodeURIComponent(window.location.href);
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`, '_blank');
+            });
+        }
+
+        // دانلود PDF
+        const pdfDownloadBtn = document.getElementById("pdf-download-btn");
+        if (pdfDownloadBtn) {
+            pdfDownloadBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                alert("در حال آماده‌سازی فایل PDF... این قابلیت به زودی فعال خواهد شد.");
+            });
+        }
+
+        // بزرگنمایی تصاویر مقاله با کلیک
+        const articleImages = document.querySelectorAll('.post-content img');
+        articleImages.forEach(img => {
+            img.addEventListener('click', function() {
+                const imageViewer = document.createElement('div');
+                imageViewer.className = 'image-viewer';
+
+                const imageElement = document.createElement('img');
+                imageElement.src = this.src;
+                imageElement.alt = this.alt;
+
+                const closeButton = document.createElement('button');
+                closeButton.className = 'close-button';
+                closeButton.innerHTML = '&times;';
+                closeButton.addEventListener('click', function() {
+                    imageViewer.remove();                });
+
+                imageViewer.appendChild(imageElement);
+                imageViewer.appendChild(closeButton);
+                document.body.appendChild(imageViewer);
+
+                // بستن با کلیک روی پس‌زمینه
+                imageViewer.addEventListener('click', function(e) {
+                    if (e.target === imageViewer) {
+                        imageViewer.remove();
+                    }
+                });
+
+                // بستن با کلید ESC
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape') {
+                        imageViewer.remove();
+                    }
+                });
+            });
+        });
+
+        // کد کپی برای بلوک‌های کد
+        const codeBlocks = document.querySelectorAll('pre');
+        codeBlocks.forEach((block, index) => {
+            const copyButton = document.createElement('button');
+            copyButton.className = 'copy-code-button';
+            copyButton.textContent = 'کپی کد';
+            copyButton.setAttribute('data-index', index);
+
+            block.style.position = 'relative';
+            block.insertBefore(copyButton, block.firstChild);
+
+            copyButton.addEventListener('click', function() {
+                const code = block.querySelector('code') ? block.querySelector('code').textContent : block.textContent;
+                navigator.clipboard.writeText(code).then(
+                    function() {
+                        // تغییر متن دکمه برای نمایش موفقیت
+                        copyButton.textContent = 'کپی شد!';
+                        setTimeout(function() {
+                            copyButton.textContent = 'کپی کد';
+                        }, 2000);
+                    },
+                    function() {
+                        copyButton.textContent = 'خطا!';
+                        setTimeout(function() {
+                            copyButton.textContent = 'کپی کد';
+                        }, 2000);
+                    }
+                );
+            });
+        });
+    });
+    </script>
+
+    <script src="comments.js"></script>
+</body>
+</html>

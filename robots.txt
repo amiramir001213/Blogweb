@@ -1,0 +1,10 @@
+
+User-agent: *
+Allow: /
+Allow: /article.html
+Allow: /contact.html
+Disallow: /fonts/
+Disallow: /Webfonts/
+Disallow: /xss_image/
+
+Sitemap: https://security-blog.repl.co/sitemap.xml

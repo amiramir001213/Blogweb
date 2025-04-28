@@ -24,16 +24,36 @@ const DataManager = {
             const response = await fetch('posts.json');
             if (!response.ok) throw new Error('خطا در دریافت مقالات');
 
-            const data = await response.json();
-            this.posts = data;
+            // دریافت متن JSON به صورت خام
+            const jsonText = await response.text();
 
-            // بررسی پارامترهای URL
-            this.checkUrlParams();
+            // بررسی اینکه JSON خالی نباشد
+            if (!jsonText || jsonText.trim() === '') {
+                throw new Error('فایل JSON خالی است');
+            }
 
-            return true;
+            try {
+                // تبدیل متن به آبجکت JSON
+                const data = JSON.parse(jsonText);
+
+                // بررسی اعتبار داده‌های دریافتی
+                if (!Array.isArray(data)) {
+                    throw new Error('فرمت داده‌های دریافتی نامعتبر است');
+                }
+
+                this.posts = data;
+
+                // بررسی پارامترهای URL
+                this.checkUrlParams();
+
+                return true;
+            } catch (parseError) {
+                console.error('خطا در پردازش JSON مقالات:', parseError);
+                throw new Error('خطا در پردازش فایل JSON: ' + parseError.message);
+            }
         } catch (error) {
             console.error('خطا در بارگذاری مقالات:', error);
-            UI.showError('متأسفانه در بارگذاری مقالات مشکلی پیش آمد. لطفا صفحه را مجدداً بارگذاری کنید.');
+            UI.showError('متأسفانه در بارگذاری مقالات مشکلی پیش آمد. لطفا صفحه را مجدداً بارگذاری کنید. (خطا: ' + error.message + ')');
             return false;
         }
     },
@@ -223,13 +243,13 @@ const UI = {
         meta.className = 'post-meta';
         meta.textContent = `تاریخ: ${post.date} | نویسنده: ${post.author}`;
 
-        // اگر مقاله تصویر داشت، آن را نمایش می‌دهیم
-        if (post.image) {
+        // نمایش بنر مقاله
+        if (post.banner) {
             const imageWrapper = document.createElement('div');
             imageWrapper.className = 'post-thumbnail';
 
             const image = document.createElement('img');
-            image.src = post.image;
+            image.src = post.banner;
             image.alt = post.title;
             image.loading = 'lazy';
 
@@ -277,25 +297,32 @@ const UI = {
         searchResults.hidden = false;
 
         if (DataManager.searchResults.length === 0) {
-            // نمایش پیام عدم یافتن نتیجه به همراه پیشنهادات جستجو
+            // ایجاد پیام عدم یافتن نتیجه به همراه پیشنهادات جستجو
             const noResultsEl = document.createElement('div');
             noResultsEl.className = 'post no-results';
 
             const noResultsMsg = document.createElement('p');
             noResultsMsg.textContent = 'نتیجه‌ای یافت نشد!';
+            noResultsMsg.style.fontFamily = "'Dana', 'DanaFaNum', sans-serif";
+            noResultsMsg.style.fontSize = "1.2rem";
+            noResultsMsg.style.fontWeight = "500";
 
             const suggestionsTitle = document.createElement('p');
             suggestionsTitle.className = 'suggestions-title';
             suggestionsTitle.textContent = 'جستجوهای پیشنهادی:';
+            suggestionsTitle.style.fontFamily = "'Dana', 'DanaFaNum', sans-serif";
+            suggestionsTitle.style.marginTop = "1.5rem";
+            suggestionsTitle.style.color = "var(--accent-color)";
 
             const suggestionsList = document.createElement('div');
             suggestionsList.className = 'search-suggestions';
 
             // نمایش پیشنهادات جستجو
-            this.suggestedKeywords.forEach(keyword => {
+            SearchManager.suggestedKeywords.forEach(keyword => {
                 const suggestionBtn = document.createElement('button');
-                suggestionBtn.className = 'suggestion-tag';
+                suggestionBtn.className = 'suggestion-tag dana-font';
                 suggestionBtn.textContent = keyword;
+                suggestionBtn.style.fontFamily = "'Dana', 'DanaFaNum', sans-serif";
                 suggestionBtn.addEventListener('click', () => {
                     document.getElementById('search-input').value = keyword;
                     SearchManager.performSearch(keyword);
@@ -333,7 +360,7 @@ const UI = {
         relatedTags.className = 'related-tags';
 
         // انتخاب چند کلمه کلیدی مرتبط برای پیشنهاد
-        this.suggestedKeywords
+        SearchManager.suggestedKeywords
             .filter(keyword => !keyword.toLowerCase().includes(query.toLowerCase()) && 
                                !query.toLowerCase().includes(keyword.toLowerCase()))
             .slice(0, 5)
@@ -343,7 +370,7 @@ const UI = {
                 relatedTag.textContent = keyword;
                 relatedTag.addEventListener('click', () => {
                     document.getElementById('search-input').value = keyword;
-                    this.performSearch(keyword);
+                    SearchManager.performSearch(keyword);
                 });
                 relatedTags.appendChild(relatedTag);
             });
@@ -434,25 +461,16 @@ const UI = {
         const post = DataManager.getPostById(id);
         if (!post) return;
 
-        // ایجاد URL برای صفحه جدید مقاله
-        let articleURL = `article.html?id=${id}`;
+        try {
+            // ایجاد URL برای صفحه جدید مقاله
+            let articleURL = `article.html?id=${id}`;
 
-        // بررسی می‌کنیم آیا article.html وجود دارد یا نه
-        // اگر وجود نداشت، از همان روش قبلی استفاده می‌کنیم
-        fetch('article.html', { method: 'HEAD' })
-            .then(response => {
-                if (response.ok) {
-                    // article.html وجود دارد، به صفحه جدید هدایت می‌کنیم
-                    window.location.href = articleURL;
-                } else {
-                    // article.html وجود ندارد، از روش قبلی استفاده می‌کنیم
-                    this.showDetailInline(id);
-                }
-            })
-            .catch(() => {
-                // در صورت خطا هم از روش قبلی استفاده می‌کنیم
-                this.showDetailInline(id);
-            });
+            // به صفحه مقاله هدایت می‌کنیم
+            window.location.href = articleURL;
+        } catch (error) {
+            console.error("خطا در نمایش مقاله:", error);
+            alert("متأسفانه در بارگذاری مقاله مشکلی پیش آمد. لطفا صفحه را مجدداً بارگذاری کنید.");
+        }
     },
 
     // نمایش جزئیات مقاله در همان صفحه (روش قبلی)
@@ -465,16 +483,22 @@ const UI = {
         document.getElementById('search-results').hidden = true;
 
         const detailElement = document.getElementById('post-detail');
+        if (!detailElement) return;
+
         detailElement.hidden = false;
         detailElement.classList.add('fade-in');
 
         // تنظیم عنوان و متادیتا
-        detailElement.querySelector('#detail-title').textContent = post.title;
-        const date = post.date || 'تاریخ: ۷ اردیبهشت ۱۴۰۴'; // Modified line
-        detailElement.querySelector('#detail-meta').textContent = `تاریخ: ${date} | نویسنده: ${post.author}`;
+        const titleElement = detailElement.querySelector('#detail-title');
+        if (titleElement) titleElement.textContent = post.title;
+
+        const date = post.date || 'تاریخ: ۷ اردیبهشت ۱۴۰۴';
+        const metaElement = detailElement.querySelector('#detail-meta');
+        if (metaElement) metaElement.textContent = `تاریخ: ${date} | نویسنده: ${post.author}`;
 
         // پاک کردن محتوای قبلی
         const contentContainer = detailElement.querySelector('#detail-content');
+        if (!contentContainer) return;
         contentContainer.innerHTML = '';
 
         // اضافه کردن تصویر شاخص اگر وجود داشته باشد
@@ -485,7 +509,7 @@ const UI = {
             const img = document.createElement('img');
             img.src = post.image;
             img.alt = post.title;
-            img.loading = 'eager'; // تصویر اصلی را سریع بارگذاری کن
+            img.loading = 'eager';
 
             imgContainer.appendChild(img);
             contentContainer.appendChild(imgContainer);
@@ -535,43 +559,117 @@ const UI = {
     addShareButton: function(post) {
         const contentContainer = document.getElementById('detail-content');
 
-        // ایجاد باکس اشتراک‌گذاری
+        // ایجاد باکس اشتراک‌گذاری با طراحی بهتر
         const shareBox = document.createElement('div');
         shareBox.className = 'share-box';
 
-        const shareText = document.createElement('p');
-        shareText.textContent = 'این مقاله را به اشتراک بگذارید:';
+        const shareTitle = document.createElement('div');
+        shareTitle.className = 'share-title';
+        shareTitle.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg><span>این مقاله را به اشتراک بگذارید:</span>';
 
         const shareBtns = document.createElement('div');
         shareBtns.className = 'share-buttons';
 
-        // دکمه کپی لینک
-        const copyLink = document.createElement('button');
-        copyLink.className = 'share-btn copy-link';
-        copyLink.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg><span>کپی لینک</span>';
+        // آرایه‌ای از شبکه‌های اجتماعی
+        const socialNetworks = [
+            {
+                name: 'کپی لینک',
+                class: 'copy-link',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>',
+                action: (url, title) => {
+                    navigator.clipboard.writeText(url).then(() => {
+                        const copyBtn = document.querySelector('.copy-link');
+                        copyBtn.classList.add('copied');
+                        const copyBtnSpan = copyBtn.querySelector('span');
+                        copyBtnSpan.textContent = '✓ کپی شد!';
+                        copyBtn.style.backgroundColor = '#e67e22';
+                        copyBtn.style.borderColor = '#d35400';
+                        setTimeout(() => {
+                            copyBtn.classList.remove('copied');
+                            copyBtnSpan.textContent = 'کپی لینک';
+                            copyBtn.style.backgroundColor = '';
+                            copyBtn.style.borderColor = '';
+                        }, 2000);
+                    });
+                }
+            },
+            {
+                name: 'تلگرام',
+                class: 'telegram-share',
+                color: '#0088cc',
+                icon: '<svg width="16" height="16" viewBox="0 0 24 24" fill="#0088cc" xmlns="http://www.w3.org/2000/svg"><path d="M22.0717 3.57277C21.8063 3.34026 21.4482 3.25452 21.1168 3.34026L2.83748 9.34026C2.39498 9.46725 2.09123 9.83027 2.01873 10.2866C1.95061 10.7428 2.13436 11.1764 2.50311 11.4153L6.57886 14.2053V19.9991C6.57886 20.4553 6.82936 20.8678 7.22561 21.0928C7.4186 21.1991 7.63873 21.2491 7.85323 21.2491C8.0771 21.2491 8.29685 21.1928 8.4961 21.0928L12.5719 18.9303L15.5781 21.5553C15.8622 21.8116 16.2396 21.9491 16.6296 21.9491C16.7156 21.9491 16.8081 21.9428 16.8969 21.9241C17.3781 21.8178 17.7781 21.5053 17.9656 21.0616L22.2781 4.56152C22.4031 4.23027 22.3281 3.8053 22.0717 3.57277Z" fill="#0088cc"/></svg>',
+                url: (url, title) => `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`
+            },
+            {
+                name: 'توییتر',
+                class: 'twitter-share',
+                color: '#1da1f2',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>',
+                url: (url, title) => `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`
+            },
+            {
+                name: 'واتساپ',
+                class: 'whatsapp-share',
+                color: '#25d366',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.498 14.382c-.301-.15-1.767-.867-2.04-.966-.273-.101-.473-.15-.673.15-.197.295-.771.964-.944 1.162-.175.195-.349.21-.646.075-.3-.15-1.263-.465-2.403-1.485-.888-.795-1.484-1.77-1.66-2.07-.174-.3-.019-.465.13-.615.136-.135.301-.345.451-.523.146-.181.194-.301.297-.496.1-.21.049-.375-.025-.524-.075-.15-.672-1.62-.922-2.206-.24-.584-.487-.51-.672-.51-.172-.015-.371-.015-.571-.015-.2 0-.523.074-.797.359-.273.3-1.045 1.02-1.045 2.475s1.07 2.865 1.219 3.075c.149.195 2.105 3.195 5.1 4.485.714.3 1.27.48 1.704.629.714.227 1.365.195 1.88.121.574-.091 1.767-.721 2.016-1.426.255-.705.255-1.29.18-1.425-.074-.135-.27-.21-.57-.345m-5.446 7.443h-.016c-1.77 0-3.524-.48-5.055-1.38l-.36-.214-3.75.975 1.005-3.645-.239-.375c-.99-1.576-1.516-3.391-1.516-5.26 0-5.445 4.455-9.885 9.942-9.885 2.654 0 5.145 1.035 7.021 2.91 1.875 1.859 2.909 4.35 2.909 6.99-.004 5.444-4.46 9.885-9.935 9.885M20.52 3.449C18.24 1.245 15.24 0 12.045 0 5.463 0 .104 5.334.101 11.893c0 2.096.549 4.14 1.595 5.945L0 24l6.335-1.652c1.746.943 3.71 1.444 5.71 1.447h.006c6.585 0 11.946-5.336 11.949-11.896 0-3.176-1.24-6.165-3.495-8.411"/></svg>',
+                url: (url, title) => `https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}`
+            },
+            {
+                name: 'لینکدین',
+                class: 'linkedin-share',
+                color: '#0077b5',
+                icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 5455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 0-1.139-.925 2.064-2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zzM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
+                url: (url, title) => `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`
+            }
+        ];
 
-        copyLink.addEventListener('click', () => {
-            const url = window.location.origin + window.location.pathname + '#' + post.id;
-            navigator.clipboard.writeText(url).then(() => {
-                copyLink.querySelector('span').textContent = 'کپی شد!';
-                setTimeout(() => {
-                    copyLink.querySelector('span').textContent = 'کپی لینک';
-                }, 2000);
-            });
+        // تابع تبدیل به PDF
+        async function generatePDF(content, title) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFont('Dana');
+            doc.setR2L(true);
+            doc.text(title, 200, 10, { align: 'right' });
+            doc.text(content, 200, 30, { align: 'right' });
+            doc.save(`${title}.pdf`);
+        }
+
+        // ایجاد دکمه‌های اشتراک‌گذاری
+        const postUrl = window.location.href;
+        const pdfButton = {
+            name: 'دانلود PDF',
+            class: 'pdf-download',
+            icon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>',
+            action: (url, title, content) => generatePDF(content, title)
+        };
+
+        socialNetworks.unshift(pdfButton);
+        socialNetworks.forEach(network => {
+            if (network.name === 'کپی لینک') {
+                // ایجاد دکمه کپی لینک
+                const button = document.createElement('button');
+                button.className = `share-btn ${network.class}`;
+                button.innerHTML = `${network.icon}<span>${network.name}</span>`;
+                button.addEventListener('click', () => network.action(postUrl, post.title));
+                shareBtns.appendChild(button);
+            } else {
+                // ایجاد لینک شبکه‌های اجتماعی
+                const link = document.createElement('a');
+                link.className = `share-btn ${network.class}`;
+                link.innerHTML = `${network.icon}<span>${network.name}</span>`;
+                if (network.color) {
+                    link.style.backgroundColor = network.color;
+                    link.style.color = "white";
+                    link.style.borderColor = network.color;
+                }
+                link.href = network.url(postUrl, post.title);
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                shareBtns.appendChild(link);
+            }
         });
 
-        // دکمه تلگرام
-        const telegramShare = document.createElement('a');
-        telegramShare.className = 'share-btn telegram-share';
-        telegramShare.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M22.0717 3.57277C21.8063 3.34026 21.4482 3.25452 21.1168 3.34026L2.83748 9.34026C2.39498 9.46725 2.09123 9.83027 2.01873 10.2866C1.95061 10.7428 2.13436 11.1764 2.50311 11.4153L6.57886 14.2053V19.9991C6.57886 20.4553 6.82936 20.8678 7.22561 21.0928C7.4186 21.1991 7.63873 21.2491 7.85323 21.2491C8.0771 21.2491 8.29685 21.1928 8.4961 21.0928L12.5719 18.9303L15.5781 21.5553C15.8622 21.8116 16.2396 21.9491 16.6296 21.9491C16.7156 21.9491 16.8081 21.9428 16.8969 21.9241C17.3781 21.8178 17.7781 21.5053 17.9656 21.0616L22.2781 4.56152C22.4031 4.23027 22.3281 3.8053 22.0717 3.57277ZM16.5594 6.18652L8.6156 13.4678L4.97686 10.9678L16.5594 6.18652ZM8.57611 19.2491V15.6928L10.7219 17.6241L8.57611 19.2491ZM16.6296 19.9491L9.41735 13.5116L20.6343 5.13027L16.6296 19.9491Z" fill="currentColor"/></svg><span>تلگرام</span>';
-        telegramShare.href = `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`;
-        telegramShare.target = '_blank';
-        telegramShare.rel = 'noopener noreferrer';
-
-        shareBtns.appendChild(copyLink);
-        shareBtns.appendChild(telegramShare);
-
-        shareBox.appendChild(shareText);
+        shareBox.appendChild(shareTitle);
         shareBox.appendChild(shareBtns);
 
         contentContainer.appendChild(shareBox);
@@ -614,7 +712,7 @@ const UI = {
                     .then(() => {
                         const originalText = copyButton.textContent;
                         copyButton.textContent = 'کپی شد! ✓';
-                        copyButton.style.backgroundColor = '#10b981'; // رنگ سبز موفقیت
+                        copyButton.style.backgroundColor = '#10b981';
                         setTimeout(() => {
                             copyButton.textContent = originalText;
                             copyButton.style.backgroundColor = '';
@@ -666,10 +764,10 @@ const UI = {
         });
     },
 
-    // هایلایت کردن کلمات کلیدی
+    // هایلایت کردن کلمات کلیدی و بهبود نمایش منابع
     highlightKeywords: function() {
         // لیستی از کلمات کلیدی
-        const keywords = ['HttpOnly', 'XSS', 'CSRF', 'Security', 'امنیت', 'کوکی', 'جلسه', 'حمله'];
+        const keywords = ['HttpOnly', 'XSS', 'CSRF', 'SQL Injection', 'Security', 'امنیت', 'کوکی', 'جلسه', 'حمله', 'فیشینگ', 'OWASP'];
 
         const content = document.getElementById('detail-content');
         if (!content) return;
@@ -682,10 +780,41 @@ const UI = {
             // پیدا کردن و هایلایت کردن کلمات کلیدی در محتوا
             // فقط در پاراگراف‌ها و لیست‌ها جستجو می‌کنیم، نه در کدها یا تگ‌های دیگر
             content.querySelectorAll('p, li').forEach(el => {
-                if (!el.querySelector('code, pre, mark')) { // اگر شامل کد یا علامت‌گذاری قبلی نباشد
+                if (!el.querySelector('code, pre, mark')) {
                     el.innerHTML = el.innerHTML.replace(regex, '<mark>$1</mark>');
                 }
             });
+        });
+
+        // بهبود نمایش منابع و رفرنس‌ها
+        const references = content.querySelectorAll('h2, h3, h4').forEach(heading => {
+            if (heading.textContent.includes('منابع') || 
+                heading.textContent.includes('رفرنس') || 
+                heading.textContent.includes('مراجع')) {
+
+                // بخش منابع را پیدا کردیم
+                const refSection = heading.nextElementSibling;
+                if (refSection && (refSection.tagName === 'UL' || refSection.tagName === 'OL')) {
+                    // تغییر استایل لیست منابع
+                    refSection.className = 'references-list';
+
+                    // بهبود نمایش آیتم‌های منابع
+                    Array.from(refSection.children).forEach((item, index) => {
+                        item.className = 'reference-item';
+
+                        // اضافه کردن شماره به ابتدای هر منبع
+                        const itemContent = item.innerHTML;
+                        item.innerHTML = `<span class="reference-number">${index + 1}</span>${itemContent}`;
+
+                        // تبدیل لینک‌ها به دکمه‌های زیبا
+                        const links = item.querySelectorAll('a');
+                        links.forEach(link => {
+                            link.className = 'reference-link';
+                            link.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg> ${link.textContent}`;
+                        });
+                    });
+                }
+            }
         });
     },
 
@@ -704,8 +833,9 @@ const SecurityUtils = {
             const secure = location.protocol === 'https:' ? '; Secure' : '';
             const expires = days ? 
                 `; expires=${new Date(Date.now() + days * 86400000).toUTCString()}` : '';
+            const httponly = '; HttpOnly';
 
-            document.cookie = `${name}=${encodeURIComponent(value)}${expires}; path=/; SameSite=Strict${secure}`;
+            document.cookie = `${name}=${encodeURIComponent(value)}${expires}; path=/; SameSite=Strict${secure}${httponly}`;
         } catch (e) {
             console.error('خطا در ذخیره کوکی:', e);
         }
@@ -727,6 +857,13 @@ const SecurityUtils = {
     sanitizeHTML: function(html) {
         // در واقعیت باید از کتابخانه‌های تخصصی استفاده شود
         return html;
+    },
+
+    // ذخیره اطلاعات جلسه کاربر
+    saveUserSession: function() {
+        // پیاده‌سازی منطق ذخیره‌سازی اطلاعات جلسه کاربر
+        // مثلاً با استفاده از localStorage یا یک فراخوانی به سرور
+        // ...
     }
 };
 
@@ -813,7 +950,8 @@ const EventManager = {
             if (DataManager.isSearchActive) {
                 document.getElementById('search-results').hidden = false;
             } else {
-                document.getElementById('post-list').hidden = false;                document.getElementById('pagination').hidden = false;
+                document.getElementById('post-list').hidden = false;
+                document.getElementById('pagination').hidden = false;
             }
 
             history.back();
@@ -824,32 +962,7 @@ const EventManager = {
             SearchManager.exitSearch();
         });
 
-        // رویداد منوی موبایل
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const mainNav = document.getElementById('main-nav');
-
-        if (mobileMenuToggle) {
-            mobileMenuToggle.addEventListener('click', () => {
-                mainNav.classList.toggle('active');
-            });
-        }
-
-        // بستن منو با کلیک خارج از آن
-        document.addEventListener('click', (e) => {
-            if (mainNav.classList.contains('active') && 
-                !mainNav.contains(e.target) && 
-                e.target !== mobileMenuToggle && 
-                !mobileMenuToggle.contains(e.target)) {
-                mainNav.classList.remove('active');
-            }
-        });
-
-        // تنظیم مجدد منو در تغییر اندازه صفحه
-        window.addEventListener('resize', () => {
-            if (window.innerWidth > 700 && mainNav.classList.contains('active')) {
-                mainNav.classList.remove('active');
-            }
-        });
+        // منوی ناوبری حذف شده است
 
         // مدیریت تاریخچه مرورگر
         window.addEventListener('popstate', (e) => {
@@ -881,97 +994,106 @@ const EventManager = {
 
     // تنظیم قابلیت تم تاریک/روشن
     setupThemeToggle: function() {
-        // افزودن دکمه تغییر تم در فوتر
-        const footerInfo = document.querySelector('.footer-info');
-
-        const themeToggle = document.createElement('button');
-        themeToggle.className = 'theme-toggle';
-        themeToggle.setAttribute('aria-label', 'تغییر تم روشن/تاریک');
-        themeToggle.innerHTML = `
-            <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 1V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 21V23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M4.22 4.22L5.64 5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M18.36 18.36L19.78 19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M1 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M21 12H23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M4.22 19.78L5.64 18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M18.36 5.64L19.78 4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M21 12.79C20.8427 14.4922 20.2039 16.1144 19.1582 17.4668C18.1126 18.8192 16.7025 19.8458 15.0957 20.4265C13.4889 21.0073 11.7467 21.1181 10.0797 20.7461C8.41267 20.3741 6.88338 19.5345 5.67418 18.3254C4.46497 17.1162 3.62545 15.5869 3.25349 13.9199C2.88153 12.2529 2.99227 10.5106 3.57303 8.90386C4.15378 7.29711 5.18035 5.88696 6.53278 4.84132C7.8852 3.79569 9.50739 3.15683 11.21 3C10.2134 4.34827 9.73385 6.00945 9.85853 7.68141C9.9832 9.35338 10.7038 10.9251 11.8894 12.1106C13.0749 13.2961 14.6466 14.0168 16.3186 14.1415C17.9906 14.2662 19.6517 13.7866 21 12.79Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        `;
-
-        footerInfo.appendChild(themeToggle);
-
-        // بررسی تم ذخیره شده
-        const savedTheme = SecurityUtils.getCookie('theme');
+        // موقتاً غیرفعال شده - دکمه تم ایجاد نمی‌شود
+        // بررسی تم ذخیره شده (ابتدا از کوکی، سپس از localStorage)
+        const savedTheme = SecurityUtils.getCookie('theme') || localStorage.getItem('theme');
         if (savedTheme === 'dark') {
             document.documentElement.classList.add('dark-theme');
         }
-
-        // رویداد تغییر تم
-        themeToggle.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark-theme');
-
-            // ذخیره تنظیمات تم
-            const isDark = document.documentElement.classList.contains('dark-theme');
-            SecurityUtils.setCookie('theme', isDark ? 'dark' : 'light', 365);
-        });
 
         // افزودن استایل‌های مورد نیاز برای تم تاریک
         this.addDarkThemeStyles();
     },
 
-    // افزودن استایل‌های تم تاریک
+    // افزودن استایل‌های تم تاریک و بهبود‌های بصری
     addDarkThemeStyles: function() {
         const style = document.createElement('style');
         style.textContent = `
             .dark-theme {
-                --text-color: #d1d5db;
-                --bg-color: #1a1a1a;
-                --accent-color: #2dd4bf;
-                --hover-color: #14b8a6;
-                --muted-color: #9ca3af;
-                --border-color: #2d2d2d;
-                --light-bg: #111827;
-                --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-                --highlight-color: #38b2ac;
+                --text-color: #e2e8f0;
+                --bg-color: #121212;
+                --accent-color: #0ea5e9;
+                --hover-color: #0284c7;
+                --muted-color: #94a3b8;
+                --border-color: #334155;
+                --light-bg: #1e293b;
+                --card-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.6), 0 2px 6px -1px rgba(0, 0, 0, 0.4);
+                --highlight-color: #38bdf8;
+                --code-bg: #0f172a;
+                --card-bg: #1e1e1e;
+                --header-bg: rgba(18, 18, 18, 0.95);
+                --footer-bg: #0f172a;
+                --search-bg: #1e1e1e;
+                --tooltip-bg: #374151;
+                --mark-bg: rgba(14, 165, 233, 0.2);
+                --share-btn-bg: #27272a;
+                --share-btn-hover: #3f3f46;
             }
 
             .dark-theme .post,
             .dark-theme .post-detail {
-                background-color: #262626;
+                background-color: var(--card-bg);
+                border: 1px solid var(--border-color);
             }
 
             .dark-theme .site-header {
-                border-bottom-color: #2d2d2d;
+                border-bottom-color: var(--border-color);
+                background-color: var(--header-bg);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
             }
 
             .dark-theme .site-footer {
-                border-top-color: #2d2d2d;
+                border-top-color: var(--border-color);
+                background-color: var(--footer-bg);
             }
 
             .dark-theme .pagination a {
-                background-color: #262626;
+                background-color: var(--card-bg);
+                border: 1px solid var(--border-color);
+            }
+
+            .dark-theme .pagination a:hover {
+                background-color: var(--accent-color);
+                border-color: var(--accent-color);
             }
 
             .dark-theme .search-container input {
-                background-color: #262626;
-                border-color: #2d2d2d;
-                color: #d1d5db;
+                background-color: var(--search-bg);
+                border-color: var(--border-color);
+                color: var(--text-color);
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+            }
+
+            .dark-theme .search-container input:focus {
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.25), inset 0 1px 3px rgba(0, 0, 0, 0.3);
             }
 
             .dark-theme .post-content pre {
-                background-color: #111827;
-                border-color: #2d2d2d;
-                color: #d1d5db;
+                background-color: var(--code-bg);
+                border-color: var(--border-color);
+                color: #e2e8f0;
+                box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
             }
 
             .dark-theme .post-content code {
-                background-color: rgba(255, 255, 255, 0.1);
+                background-color: rgba(255, 255, 255, 0.08);
+                color: #93c5fd;
+            }
+
+            .dark-theme mark, 
+            .dark-theme .search-term-highlight {
+                background-color: var(--mark-bg);
+                color: #fff;
+                border-radius: 2px;
+            }
+
+            .dark-theme .button {
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            }
+
+            .dark-theme .button:hover {
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             }
 
             .dark-theme .theme-toggle .sun-icon {
@@ -982,6 +1104,54 @@ const EventManager = {
                 display: block;
             }
 
+            .dark-theme .post-content img {
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+                border: 1px solid var(--border-color);
+            }
+
+            .dark-theme .copy-code-button {
+                background-color: var(--accent-color);
+            }
+
+            .dark-theme .suggestion-tag {
+                background-color: var(--light-bg);
+                border-color: var(--border-color);
+            }
+
+            .dark-theme .suggestion-tag:hover {
+                background-color: var(--accent-color);
+            }
+
+            .dark-theme .share-box {
+                background-color: var(--light-bg);
+                border-color: var(--border-color);
+            }
+
+            .dark-theme .share-btn {
+                background-color: var(--share-btn-bg);
+                color: var(--text-color);
+                border-color: var(--border-color);
+            }
+
+            .dark-theme .share-btn:hover {
+                background-color: var(--share-btn-hover);
+            }
+
+            .dark-theme .references-list {
+                background-color: var(--light-bg);
+                border-color: var(--border-color);
+            }
+
+            .dark-theme .reference-number {
+                background-color: var(--accent-color);
+            }
+
+            .dark-theme .reference-link {
+                color: var(--accent-color);
+                border-color: var(--border-color);
+            }
+
+            /* استایل‌های عمومی */
             .theme-toggle .sun-icon {
                 display: block;
             }
@@ -991,22 +1161,40 @@ const EventManager = {
             }
 
             .theme-toggle {
-                background: transparent;
-                border: none;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                background-color: var(--light-bg);
+                border: 1px solid var(--border-color);
                 cursor: pointer;
-                color: var(--muted-color);
-                margin-left: 1rem;
-                padding: 0.3rem;
+                color: var(--text-color);
+                margin-right: 1rem;
+                padding: 0.5rem 0.8rem;
+                border-radius: 2rem;
+                transition: all 0.2s ease;
+                font-size: 0.85rem;
+                font-weight: 500;
+            }
+
+            .theme-toggle-icon {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 24px;
+                height: 24px;
+                background-color: var(--accent-color);
+                color: white;
                 border-radius: 50%;
-                transition: background-color 0.2s;
+                padding: 0.2rem;
             }
 
             .theme-toggle:hover {
-                background-color: rgba(0, 0, 0, 0.1);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
 
-            .dark-theme .theme-toggle:hover {
-                background-color: rgba(255, 255, 255, 0.1);
+            .theme-toggle:active {
+                transform: translateY(0);
             }
 
             .image-viewer {
@@ -1020,23 +1208,45 @@ const EventManager = {
                 align-items: center;
                 justify-content: center;
                 z-index: 1000;
+                animation: fadeIn 0.3s ease;
+                backdrop-filter: blur(5px);
             }
 
             .image-viewer img {
                 max-width: 90%;
                 max-height: 90%;
                 object-fit: contain;
+                border-radius: 3px;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+                animation: zoomIn 0.3s ease;
+            }
+
+            @keyframes zoomIn {
+                from { transform: scale(0.95); opacity: 0; }
+                to { transform: scale(1); opacity: 1; }
             }
 
             .image-viewer .close-button {
                 position: absolute;
                 top: 20px;
                 right: 20px;
-                background: none;
+                background: rgba(255, 255, 255, 0.2);
                 border: none;
                 color: white;
                 font-size: 2rem;
                 cursor: pointer;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+            }
+
+            .image-viewer .close-button:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
             }
 
             .copy-code-button {
@@ -1052,10 +1262,14 @@ const EventManager = {
                 cursor: pointer;
                 opacity: 0.7;
                 transition: opacity 0.2s;
+                z-index: 5;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             }
 
             .copy-code-button:hover {
                 opacity: 1;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             }
 
             .lazy-image {
@@ -1065,6 +1279,165 @@ const EventManager = {
             .error-message {
                 color: #e53e3e;
                 font-weight: 500;
+            }
+
+            /* استایل برای اشتراک‌گذاری */
+            .share-box {
+                background-color: var(--light-bg);
+                border-radius: 0.8rem;
+                padding: 1.5rem;
+                margin-top: 3rem;
+                box-shadow: 0 4px10px rgba(0, 0, 0, 0.05);
+                border: 1px solid var(--border-color);
+            }
+
+            .share-title {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin-bottom: 1.2rem;
+                font-weight: 600;
+                color: var(--accent-color);
+            }
+
+            .share-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.7rem;
+            }
+
+            .share-btn {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.7rem 1rem;
+                border-radius: 2rem;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                background-color: white;
+                border: 1px solid var(--border-color);
+                color: var(--text-color);
+                text-decoration: none;
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            }
+
+            .share-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+            }
+
+            .copy-link {
+                background-color: #f5f5f5;
+                color: #333;
+            }
+
+            .copied .copy-link span {
+                color: #10b981;
+            }
+
+            .copied .copy-link {
+                background-color: #e2f2e9;
+            }
+
+
+            .telegram-share {
+                background-color: #0088cc;
+                color: white;
+                border-color: #0088cc;
+            }
+
+            .twitter-share {
+                background-color: #1da1f2;
+                color: white;
+                border-color: #1da1f2;
+            }
+
+            .whatsapp-share {
+                background-color: #25d366;
+                color: white;
+                border-color: #25d366;
+            }
+
+            .linkedin-share {
+                background-color: #0077b5;
+                color: white;
+                border-color: #0077b5;
+            }
+
+            /* استایل برای منابع */
+            .references-list {
+                background-color: #f8fafc;
+                border-radius: 0.8rem;
+                padding: 1.5rem 2rem;
+                margin: 2rem 0;
+                border: 1px solid var(--border-color);
+                list-style-type: none;
+            }
+
+            .reference-item {
+                padding: 0.8rem 0;
+                border-bottom: 1px solid var(--border-color);
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .reference-item:last-child {
+                border-bottom: none;
+            }
+
+            .reference-number {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 24px;
+                height: 24px;
+                background-color: var(--accent-color);
+                color: white;
+                border-radius: 50%;
+                font-size: 0.8rem;
+                font-weight: bold;
+                flex-shrink: 0;
+            }
+
+            .reference-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                margin-top: 0.5rem;
+                padding: 0.4rem 0.8rem;
+                background-color: rgba(0, 0, 0, 0.03);
+                border-radius: 2rem;
+                border: 1px solid var(--border-color);
+                color: var(--accent-color);
+                text-decoration: none;
+                font-size: 0.85rem;
+                transition: all 0.2s ease;
+            }
+
+            .reference-link:hover {
+                background-color: var(--accent-color);
+                color: white;
+                border-color: var(--accent-color);
+                transform: translateY(-2px);
+            }
+
+            @media (max-width: 700px) {
+                .share-buttons {
+                    flex-direction: column;
+                }
+
+                .share-btn {
+                    width: 100%;
+                    flex: none;
+                }
+            }
+            .dana-font {
+                font-family: 'Dana', 'DanaFaNum', sans-serif;
             }
         `;
 
@@ -1154,7 +1527,7 @@ const EventManager = {
 
 // مدیریت تجربه کاربری
 const UXManager = {
-    // مدیریت لود تنبل تصاویر
+    // مدیریت لود تنبل تصاویر با بهینه‌سازی سئو
     setupLazyLoading: function() {
         if ('IntersectionObserver' in window) {
             const imageObserver = new IntersectionObserver(entries => {
@@ -1167,6 +1540,9 @@ const UXManager = {
                             img.src = dataSrc;
                             img.removeAttribute('data-src');
                         }
+
+                        // بررسی و بهبود Alt برای سئو
+                        this.optimizeImageAlt(img);
 
                         img.classList.add('loaded');
                         imageObserver.unobserve(img);
@@ -1183,7 +1559,65 @@ const UXManager = {
             document.querySelectorAll('img[data-src]').forEach(img => {
                 img.src = img.getAttribute('data-src');
                 img.removeAttribute('data-src');
+
+                // بررسی و بهبود Alt برای سئو
+                this.optimizeImageAlt(img);
             });
+        }
+
+        // بهینه‌سازی عمومی تصاویر برای سئو
+        document.querySelectorAll('img').forEach(img => {
+            // اضافه کردن ویژگی loading=lazy برای تصاویر
+            if (!img.hasAttribute('loading')) {
+                img.loading = 'lazy';
+            }
+
+            // اطمینان از وجود alt
+            this.optimizeImageAlt(img);
+
+            // اضافه کردن ابعاد تصویر برای کاهش CLS
+            if (!img.hasAttribute('width') && !img.hasAttribute('height') && img.complete) {
+                if (img.naturalWidth > 0) {
+                    img.setAttribute('width', img.naturalWidth);
+                    img.setAttribute('height', img.naturalHeight);
+                }
+            }
+        });
+    },
+
+    // بهینه‌سازی متن جایگزین تصاویر برای سئو
+    optimizeImageAlt: function(img) {
+        // اگر alt وجود ندارد یا خالی است
+        if (!img.alt || img.alt === '') {
+            // سعی می‌کنیم از نام فایل یا متن اطراف تصویر برای alt استفاده کنیم
+            let altText = '';
+
+            // بررسی عنصر والد
+            const parent = img.parentElement;
+            if (parent) {
+                if (parent.tagName === 'FIGURE' && parent.querySelector('figcaption')) {
+                    // استفاده از متن figcaption
+                    altText = parent.querySelector('figcaption').textContent;
+                } else if (parent.previousElementSibling && 
+                           ['H1', 'H2', 'H3', 'H4'].includes(parent.previousElementSibling.tagName)) {
+                    // استفاده از متن عنوان قبل از تصویر
+                    altText = parent.previousElementSibling.textContent;
+                } else {
+                    // استفاده از نام فایل به عنوان آخرین گزینه
+                    try {
+                        const imgSrc = img.src.split('/').pop();
+                        altText = imgSrc.split('.')[0].replace(/[-_]/g, ' ');
+                        // کاپیتالایز کردن
+                        altText = altText.charAt(0).toUpperCase() + altText.slice(1);
+                    } catch(e) {
+                        altText = 'تصویر مرتبط با امنیت وب';
+                    }
+                }
+            } else {
+                altText = 'تصویر مرتبط با امنیت وب';
+            }
+
+            img.alt = altText;
         }
     },
 
@@ -1202,7 +1636,7 @@ const UXManager = {
             .scroll-to-top {
                 position: fixed;
                 bottom: 20px;
-                right: 20px;
+                left: 20px;
                 width: 40px;
                 height: 40px;
                 border-radius: 50%;

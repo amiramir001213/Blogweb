@@ -1,5 +1,39 @@
 /* styles.css */
 
+/* دکمه چت */
+.chat-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.chat-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.chat-button svg {
+    width: 30px;
+    height: 30px;
+}
+
+.dark-theme .chat-button {
+    background-color: var(--accent-color);
+    color: white;
+}
+
 /* — فونت «دانا» — */
 @font-face {
     font-family: 'Dana';
@@ -60,7 +94,8 @@
 
 html {
     scroll-behavior: smooth;
-    scroll-padding-top: 70px;
+    scroll-padding-top: 0px; /*Removed header height*/
+    overflow-y: scroll;
 }
 
 body {
@@ -84,12 +119,12 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 1rem var(--spacing);
-    border-bottom: 2px solid var(--accent-color);
+    /*border-bottom: 2px solid var(--accent-color);*/ /*removed border*/
     margin-bottom: 2rem;
-    position: sticky;
-    top: 0;
+    /*position: sticky;
+    top: 0;*/ /*removed sticky header*/
     background-color: rgb(252, 252, 252, 0.95);
-    z-index: 100;
+    /*z-index: 100;*/ /*removed z-index*/
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
@@ -116,60 +151,172 @@ body {
     font-weight: bold;
     color: var(--accent-color);
     margin: 0;
+    cursor: pointer; /* Added cursor style */
+    text-decoration:none; /*remove underline*/
+}
+
+.site-title:hover{
+    text-decoration:underline; /*underline on hover*/
 }
 
 /* جستجو */
 .search-container {
     display: flex;
     position: relative;
-    width: 250px;
+    width: 300px;
     order: 2;
 }
 
 .search-container input {
     width: 100%;
-    padding: 0.5rem 2.5rem 0.5rem 0.8rem;
+    padding: 0.7rem 2.8rem 0.7rem 1rem;
     border: 1px solid var(--border-color);
-    border-radius: 0.4rem;
-    font-family: 'Dana', sans-serif;
-    font-size: 0.9rem;
-    transition: all 0.2s;
+    border-radius: 2rem;
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .search-container input:focus {
     outline: none;
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.2);
+    box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.15);
+    background-color: white;
+}
+
+.search-container input::placeholder {
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+    color: var(--muted-color);
 }
 
 .search-button {
     position: absolute;
-    right: 0.5rem;
+    right: 0.8rem;
     top: 50%;
     transform: translateY(-50%);
     background: transparent;
     border: none;
     cursor: pointer;
     color: var(--accent-color);
-    padding: 0.2rem;
+    padding: 0.3rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.search-button:hover {
+    transform: translateY(-50%) scale(1.1);
+    color: var(--hover-color);
 }
 
 .search-results {
     margin-bottom: 2rem;
+    animation: fadeIn 0.5s ease;
 }
 
 .search-results h2 {
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
+    color: var(--accent-color);
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+    border-right: 4px solid var(--accent-color);
+    padding-right: 0.8rem;
 }
 
 .search-term-highlight {
     background-color: var(--highlight-color);
-    padding: 0 2px;
-    border-radius: 2px;
+    padding: 0 3px;
+    border-radius: 3px;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* استایل‌های جدید برای پیشنهادات جستجو */
+.search-suggestions-dropdown {
+    position: absolute;
+    top: 105%;
+    right: 0;
+    left: 0;
+    background-color: white;
+    border: 1px solid var(--border-color);
+    border-radius: 0.8rem;
+    margin-top: 0.5rem;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 0;
+}
+
+.suggestion-item {
+    padding: 0.7rem 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-right: 0 solid var(--accent-color);
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+}
+
+.suggestion-item:hover {
+    background-color: rgba(45, 106, 79, 0.08);
+    color: var(--accent-color);
+    border-right-width: 4px;
+}
+
+.dark-theme .search-suggestions-dropdown {
+    background-color: #262626;
+    border-color: #333;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.dark-theme .suggestion-item:hover {
+    background-color: rgba(14, 165, 233, 0.15);
+}
+
+.suggestion-item .matched-text {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+/* استایل‌های جدید برای نتایج جستجو */
+.results-count {
+    background-color: var(--light-bg);
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+    font-weight: 500;
+}
+
+/* استایل برای هایلایت‌های مختلف مقاله */
+.header-mark {
+    background-color: rgba(45, 106, 79, 0.12);
+    border-radius: 4px;
+    padding: 0.2rem 0.6rem;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.keyword-mark {
+    background-color: rgba(255, 152, 0, 0.18);
+    border-radius: 3px;
+    padding: 0 3px;
+    font-weight: 500;
+}
+
+.dark-theme .header-mark {
+    background-color: rgba(14, 165, 233, 0.2);
+    color: #38bdf8;
+}
+
+.dark-theme .keyword-mark {
+    background-color: rgba(255, 152, 0, 0.3);
+    color: #fdba74;
 }
 
 /* استایل‌های منوی پیشنهادات جستجو */
@@ -208,51 +355,6 @@ body {
     background-color: #1a1a1a;
 }
 
-/* منوی موبایل */
-.mobile-menu-toggle {
-    display: none;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 30px;
-    height: 21px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    z-index: 2;
-}
-
-.mobile-menu-toggle span {
-    width: 100%;
-    height: 3px;
-    background-color: var(--text-color);
-    border-radius: 3px;
-    transition: all 0.3s;
-}
-
-@media (max-width: 700px) {
-    .site-nav {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 70%;
-        height: 100vh;
-        background-color: var(--bg-color);
-        flex-direction: column;
-        padding: 5rem 2rem;
-        gap: 1.5rem;
-        transition: right 0.3s ease;
-        z-index: 1;
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .site-nav.active {
-        right: 0;
-    }
-
-    .mobile-menu-toggle {
-        display: flex;
-    }
-}
 
 .logo {
     font-size: 1.7rem;
@@ -264,39 +366,6 @@ body {
 
 .logo:hover {
     opacity: 0.85;
-}
-
-.site-nav {
-    display: flex;
-    gap: 1.5rem;
-}
-
-.site-nav a {
-    text-decoration: none;
-    color: var(--muted-color);
-    font-weight: 500;
-    transition: color .2s;
-    font-size: 0.95rem;
-    position: relative;
-}
-
-.site-nav a:after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -4px;
-    left: 0;
-    background-color: var(--accent-color);
-    transition: width 0.3s;
-}
-
-.site-nav a:hover {
-    color: var(--accent-color);
-}
-
-.site-nav a:hover:after {
-    width: 100%;
 }
 
 /* دکمه‌ها */
@@ -312,6 +381,7 @@ body {
     transition: background-color 0.2s, transform 0.1s;
     font-size: 0.9rem;
     cursor: pointer;
+    font-family: 'Dana', 'DanaFaNum', sans-serif; /* Added font-family */
 }
 
 .button:hover {
@@ -417,6 +487,7 @@ body {
     font-weight: 500;
     box-shadow: var(--card-shadow);
     transition: all 0.2s;
+    font-family: 'Dana', 'DanaFaNum', sans-serif; /* Added font-family */
 }
 
 .pagination a:hover {
@@ -508,6 +579,7 @@ body {
     border: 1px solid var(--border-color);
     color: var(--text-color);
     text-decoration: none;
+    font-family: 'Dana', 'DanaFaNum', sans-serif; /* Added font-family */
 }
 
 .share-btn:hover {
@@ -522,13 +594,81 @@ body {
 
 .telegram-share {
     background-color: #0088cc;
-    color: white;
+    color: white !important;
     border-color: #0088cc;
 }
 
 .telegram-share:hover {
     background-color: #0077b5;
     border-color: #0077b5;
+    color: white !important;
+}
+
+.x-share {
+    background-color: #000000;
+    color: white !important;
+    border-color: #000000;
+}
+
+.x-share:hover {
+    background-color: #333333;
+    border-color: #333333;
+    color: white !important;
+}
+
+.whatsapp-share {
+    background-color: #25d366;
+    color: white !important;
+    border-color: #25d366;
+}
+
+.whatsapp-share:hover {
+    background-color: #1da851;
+    border-color: #1da851;
+    color: white !important;
+}
+
+.linkedin-share {
+    background-color: #0077b5;
+    color: white !important;
+    border-color: #0077b5;
+}
+
+.linkedin-share:hover {
+    background-color: #005fa3;
+    border-color: #005fa3;
+    color: white !important;
+}
+
+.pdf-download {
+    background-color: #ff5722;
+    color: white !important;
+    border-color: #ff5722;
+}
+
+.pdf-download:hover {
+    background-color: #e64a19;
+    border-color: #e64a19;
+    color: white !important;
+}
+
+.pdf-download-share {
+    background-color: #e53e3e;
+    color: white;
+    border-color: #e53e3e;
+}
+
+.download-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 5px;
+    z-index: 9999;
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
 }
 
 /* استایل‌های پیشنهادات جستجو */
@@ -574,6 +714,44 @@ body {
     margin-top: 2rem;
     padding-top: 1.5rem;
     border-top: 1px solid var(--border-color);
+}
+
+/* استایل برای بنر مقاله */
+.article-banner {
+    margin: -2rem -2rem 2rem -2rem;
+    max-height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+
+.article-banner img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 768px;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+    transition: transform 0.5s ease;
+}
+
+@media (min-width: 768px) {
+    .article-banner {
+        overflow: visible;
+        max-height: none;
+        margin: 0 auto 2rem auto;
+    }
+
+    .article-banner img {
+        max-width: 100%;
+        width: auto;
+        height: auto;
+        max-height: 768px;
+    }
+}
+
+.article-banner:hover img {
+    transform: scale(1.03);
 }
 
 /* استایل برای تصاویر مقاله */
@@ -667,23 +845,36 @@ body {
 }
 
 .footer-contact .telegram-link {
-    padding: 0.7rem 1.2rem;
-    background-color: rgba(45, 106, 79, 0.1);
+    padding: 0.8rem 1.4rem;
+    background-color: #0088cc;
     border-radius: 2rem;
-    color: var(--accent-color);
+    color: white;
     font-weight: 500;
     transition: all 0.3s;
     display: flex;
     align-items: center;
     text-decoration: none;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 8px rgba(0, 136, 204, 0.3);
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
 }
 
 .footer-contact .telegram-link:hover {
-    background-color: var(--accent-color);
+    background-color: #0077b5;
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 136, 204, 0.4);
+}
+
+.dark-theme .footer-contact .telegram-link {
+    background-color: #0088cc;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 136, 204, 0.5);
+}
+
+.dark-theme .footer-contact .telegram-link:hover {
+    background-color: #0099e6;
+    color: white;
+    box-shadow: 0 8px 16px rgba(0, 136, 204, 0.6);
 }
 
 .telegram-link .telegram-icon {
@@ -693,11 +884,22 @@ body {
     border-radius: 50%;
     padding: 0.3rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
 }
 
 .telegram-link:hover .telegram-icon {
-    transform: scale(1.1);
+    transform: scale(1.2) rotate(10deg);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.telegram-link .telegram-icon svg {
+    fill: #0088cc;
+    width: 18px;
+    height: 18px;
+}
+
+.telegram-link:hover .telegram-icon svg {
+    fill: #0077b5;
 }
 
 /* مدیا کوئری‌ها */
@@ -718,14 +920,6 @@ body {
         margin: 0.5rem 0;
     }
 
-    .mobile-menu-toggle {
-        height: 2rem;
-        margin-right: 0.5rem;
-    }
-
-    .site-nav {
-        background-color: rgb(252, 252, 252, 0.98);
-    }
 
     .footer-content {
         flex-direction: column;
@@ -787,7 +981,7 @@ body {
         width: 95%;
     }
 
-    .post-detail {
+.post-detail {
         padding: 1.2rem;
     }
 
@@ -856,6 +1050,7 @@ body {
     transition: all 0.3s ease;
     z-index: 5;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    font-family: 'Dana', 'DanaFaNum', sans-serif; /* Added font-family */
 }
 
 .copy-code-button:hover {
@@ -939,7 +1134,7 @@ body {
 }
 
 .dark-theme mark, 
-.dark-theme .search-term-highlight {
+.dark-theme .search-termhighlight {
     background-color: rgba(56, 189, 248, 0.25);
     color: #fff;
     border-radius: 2px;
@@ -947,9 +1142,7 @@ body {
 
 .dark-theme .button {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-.dark-theme .button:hover {
+}.dark-theme .button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
@@ -964,6 +1157,41 @@ body {
 .dark-theme .post-content img {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     border: 1px solid var(--border-color);
+}
+
+
+/* استایل لینک‌های ارجاع به API و استانداردها */
+.api-ref {
+    position: relative;
+    text-decoration: none;
+    color: var(--accent-color);
+    background-color: rgba(14, 165, 233, 0.1);
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.api-ref::after {
+    content: "❓";
+    font-size: 0.7em;
+    margin-right: 4px;
+    margin-left: 2px;
+}
+
+.api-ref:hover {
+    background-color: rgba(14, 165, 233, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .api-ref {
+    background-color: rgba(14, 165, 233, 0.2);
+}
+
+.dark-theme .api-ref:hover {
+    background-color: rgba(14, 165, 233, 0.3);
 }
 
 .dark-theme .copy-code-button {
@@ -1001,46 +1229,878 @@ body {
 
 .image-viewer img {
     max-width: 90%;
-max-height: 90%;
-                object-fit: contain;
-                border-radius: 3px;
-                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-                animation: zoomIn 0.3s ease;
-            }
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 3px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    animation: zoomIn 0.3s ease;
+}
 
-            @keyframes zoomIn {
-                from { transform: scale(0.95); opacity: 0; }
-                to { transform: scale(1); opacity: 1; }
-            }
+@keyframes zoomIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
 
-            .image-viewer .close-button {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                background: rgba(255, 255, 255, 0.2);
-                border: none;
-                color: white;
-                font-size: 2rem;
-                cursor: pointer;
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.2s ease;
-            }
+.image-viewer .close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    borderradius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
 
-            .image-viewer .close-button:hover {
-                background: rgba(255, 255, 255, 0.3);
-                transform: scale(1.1);
-            }
+.image-viewer .close-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
 
-            .dark-theme .image-viewer {
-                background-color: rgba(0, 0, 0, 0.95);
-            }
+.dark-theme .image-viewer {
+    background-color: rgba(0, 0, 0, 0.95);
+}
 
-            .dark-theme .image-viewer img {
-                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
-                border: 1px solid var(--border-color);
-            }
+.dark-theme .image-viewer img {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--border-color);
+}
+
+/* استایل بهبود یافته برای بخش منابع */
+.references-section {
+    background-color: var(--light-bg);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.reference-item {
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+}
+
+.reference-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.reference-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background-color: var(--accent-color);
+    color: white;
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* استایل بهبود یافته برای لینک تلگرام در فوتر */
+.dark-theme .footer-contact .telegram-link {
+    background-color: var(--accent-color); /* آبی در تم تاریک */
+    color: white;
+}
+
+.dark-theme .footer-contact .telegram-link:hover {
+    background-color: var(--hover-color); /* آبی تیره در تم تاریک هنگام hover */
+    color: white;
+}
+
+
+.dark-theme .share-buttons {
+    flex-direction: column;
+}
+
+.dark-theme .share-btn {
+    width: 100%;
+    flex: none;
+}
+
+/* استایل بخش نظرات */
+.comments-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.comments-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+}
+
+.comments-title::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background-color: var(--accent-color);
+    margin-left: 10px;
+    border-radius: 2px;
+}
+
+.comments-container {
+    margin-bottom: 2rem;
+}
+
+.comment {
+    background-color: var(--light-bg);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    position: relative;
+    border-top: 2px solid var(--accent-color);
+}
+
+.comment:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.comment-author {
+    font-weight: 600;
+    color: var(--accent-color);
+    display: inline-flex;
+    align-items: center;
+}
+
+.comment-author::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-color);
+    margin-left: 8px;
+    border-radius: 50%;
+}
+
+.comment-date {
+    font-size: 0.8rem;
+    color: var(--muted-color);
+}
+
+.comment-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    color: var(--muted-color);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    color: var(--accent-color);
+    background-color: rgba(45, 106, 79, 0.1);
+}
+
+.delete-btn:hover {
+    color: #e53e3e;
+    background-color: rgba(229, 62, 62, 0.1);
+}
+
+.comment-body {
+    line-height: 1.6;
+    white-space: pre-line;
+    margin-bottom: 0.8rem;
+}
+
+/* استایل پاسخ‌ها */
+.replies-container {
+    margin-top: 1rem;
+    margin-right: 1.5rem;
+    padding-right: 1rem;
+    border-right: 2px solid var(--border-color);
+}
+
+.reply {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    position: relative;
+    border-right: 3px solid var(--accent-color);
+}
+
+.reply:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.reply-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.6rem;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.reply-author {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.reply-date {
+    font-size: 0.75rem;
+    color: var(--muted-color);
+}
+
+.reply-actions {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.reply-body {
+    line-height: 1.5;
+    font-size: 0.95rem;
+    white-space: pre-line;
+}
+
+/* فرم ارسال نظر */
+.comment-form {
+    background-color: var(--light-bg);
+    padding: 1.5rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s;
+    border-top: 3px solid var(--accent-color);
+}
+
+.comment-form:focus-within {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.comment-form input,
+.comment-form textarea,
+.reply-form input,
+.reply-form textarea,
+.edit-form textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+    font-size: 0.95rem;
+    background-color: white;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.comment-form input:focus,
+.comment-form textarea:focus,
+.reply-form input:focus,
+.reply-form textarea:focus,
+.edit-form textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.1);
+}
+
+.comment-submit {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+}
+
+/* فرم‌های پاسخ و ویرایش */
+.reply-form,
+.edit-form {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.form-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.reply-submit,
+.save-btn {
+    padding: 0.5rem 1rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.reply-submit:hover,
+.save-btn:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+.cancel-btn {
+    padding: 0.5rem 1rem;
+    background-color: #64748b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.cancel-btn:hover {
+    background-color: #475569;
+    transform: translateY(-2px);
+}
+
+.new-comment {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.new-comment.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.comment-success {
+    background-color: #ebfbee;
+    color: #0f766e;
+    padding: 1rem;
+    border-radius: 5px;
+    margin: 1rem 0;
+    font-weight: 500;
+    border-right: 4px solid #0f766e;
+    animation: fadeIn 0.5s ease;
+}
+
+.no-comments {
+    text-align: center;
+    padding: 2rem;
+    color: var(--muted-color);
+    font-size: 0.95rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    border: 1px dashed var(--border-color);
+}
+
+/* استایل برای حالت تاریک */
+.dark-theme .comment {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+}
+
+.dark-theme .comment-form {
+    background-color: var(--card-bg);
+}
+
+.dark-theme .comment-form input,
+.dark-theme .comment-form textarea,
+.dark-theme .reply-form input,
+.dark-theme .reply-form textarea,
+.dark-theme .edit-form textarea {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+.dark-theme .reply {
+    background-color: rgba(30, 41, 59, 0.4);
+}
+
+.dark-theme .reply-form,
+.dark-theme .edit-form {
+    background-color: var(--card-bg);
+}
+
+.dark-theme .action-btn:hover {
+    background-color: rgba(14, 165, 233, 0.2);
+}
+
+.dark-theme .delete-btn:hover {
+    background-color: rgba(229, 62, 62, 0.2);
+}
+
+.dark-theme .comment-success {
+    background-color: rgba(15, 118, 110, 0.2);
+    color: #5eead4;
+    border-right-color: #5eead4;
+}
+
+.dark-theme .no-comments {
+    background-color: rgba(30, 41, 59, 0.3);
+    border-color: var(--border-color);
+}
+.pdf-download {
+    background-color: #ff5722;
+    color: white !important;
+    border-color: #ff5722;
+}
+
+.pdf-download:hover {
+    background-color: #e64a19;
+    border-color: #e64a19;
+    color: white !important;
+}
+
+.pdf-loading {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 90px;
+    left: 30px;  /* Changed from right to left */
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.theme-toggle {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    display: none; /* تغییر از flex به none برای مخفی‌سازی */
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--accent-color);
+    border-radius: 50px;
+    padding: 8px 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    color: white;
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+    z-index: 1000;
+    border: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.theme-toggle-text {
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+}
+
+.dark-theme .theme-toggle {
+    background-color: #0ea5e9;
+}
+
+.theme-toggle .theme-toggle-text {
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+}
+
+/* کلاس عمومی برای استفاده از فونت دانا */
+.dana-font {
+    font-family: 'Dana', 'DanaFaNum', sans-serif !important;
+}
+
+/* اعمال فونت دانا به همه دکمه‌ها و لینک‌ها */
+button, a, input, textarea, .share-btn, .copy-link span, .button {
+    font-family: 'Dana', 'DanaFaNum', sans-serif;
+}
+
+/* Error message styles */
+.error-message {
+    color: #e53e3e;
+    font-weight: 500;
+}
+
+.error-message-container {
+    text-align: center;
+    padding: 2rem;
+    margin: 2rem auto;
+    max-width: 600px;
+    background-color: #fff9fa;
+    border: 1px solid #fed7d7;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.dark-theme .error-message-container {
+    background-color: #2d3748;
+    border-color: #63171b;
+}
+
+.error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.error-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.reload-button {
+    background-color: #3182ce;
+}
+
+.reload-button:hover {
+    background-color: #2c5282;
+}
+
+.home-button {
+    background-color: #38a169;
+}
+
+.home-button:hover {
+    background-color: #2f855a;
+}
+
+/*Added a link to the home page in the header*/
+.copy-link.copied {
+    background-color: #e67e22;
+    color: white !important;
+    border-color: #d35400;
+    font-weight: bold;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.api-ref {
+    position: relative;
+    text-decoration: none;
+    color: var(--accent-color);
+    background-color: rgba(14, 165, 233, 0.1);
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.api-ref::after {
+    content: "❓";
+    font-size: 0.7em;
+    margin-right: 4px;
+    margin-left: 2px;
+}
+
+.api-ref:hover {
+    background-color: rgba(14, 165, 233, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.dark-theme .api-ref {
+    background-color: rgba(14, 165, 233, 0.2);
+}
+
+.dark-theme .api-ref:hover {
+    background-color: rgba(14, 165, 233, 0.3);
+}
+
+.dark-theme .copy-code-button {
+    background-color: var(--accent-color);
+}
+
+.dark-theme .suggestion-tag {
+    background-color: var(--light-bg);
+    border-color: var(--border-color);
+}
+
+.dark-theme .suggestion-tag:hover {
+    background-color: var(--accent-color);
+}
+/* استایل برای کلمات کلیدی و tooltip هوش مصنوعی */
+.keyword {
+    background-color: rgba(45, 106, 79, 0.15);
+    border-radius: 4px;
+    padding: 0.2rem 0.4rem;
+    color: var(--accent-color);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.keyword:hover {
+    background-color: rgba(45, 106, 79, 0.25);
+}
+
+.ai-tooltip {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--accent-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+.keyword:hover .ai-tooltip {
+    opacity: 1;
+    visibility: visible;
+    top: -35px;
+}
+
+.ai-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px 5px 0;
+    border-style: solid;
+    border-color: var(--accent-color) transparent transparent;
+}
+
+/* استایل برای منابع */
+.references-list {
+    list-style: none;
+    padding: 0;
+}
+
+.references-list li {
+    margin-bottom: 0.8rem;
+}
+
+.copy-link {
+    background-color: #ff9800;
+    color: white;
+    border-color: #ff9800;
+    transition: all 0.3s ease;
+}
+
+.copy-link:hover {
+    background-color: #e68a00;
+    border-color: #e68a00;
+}
+
+.copy-link.copied {
+    background-color: #e67e22 !important;
+    color: white !important;
+    border-color: #d35400 !important;
+}
+
+.telegram-share {
+    background-color: #0088cc;
+    color: white !important;
+    border-color: #0088cc;
+}
+
+.telegram-share svg {
+    fill: white;
+}
+
+.x-share {
+    background-color: #000000;
+    color: white !important;
+    border-color: #000000;
+}
+
+.x-share:hover {
+    background-color: #333333;
+    border-color: #333333;
+}
+
+.linkedin-share {
+    background-color: #0077b5;
+    color: white !important;
+    border-color: #0077b5;
+}
+
+.linkedin-share svg {
+    fill: white;
+}
+
+.telegram-share:hover svg, .x-share:hover svg, .linkedin-share:hover svg {
+    fill: white;
+}
+/* استایل برای کلمات کلیدی و tooltip هوش مصنوعی */
+.keyword {
+    background-color: rgba(45, 106, 79, 0.15);
+    border-radius: 4px;
+    padding: 0.2rem 0.4rem;
+    color: var(--accent-color);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.keyword:hover {
+    background-color: rgba(45, 106, 79, 0.25);
+}
+
+.ai-tooltip {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--accent-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+.keyword:hover .ai-tooltip {
+    opacity: 1;
+    visibility: visible;
+    top: -35px;
+}
+
+.ai-tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px 5px 0;
+    border-style: solid;
+    border-color: var(--accent-color) transparent transparent;
+}
+
+/* استایل برای منابع */
+.references-list {
+    list-style: none;
+    padding: 0;
+}
+
+.references-list li {
+    margin-bottom: 0.8rem;
+}
+
+.post-content h2.article-header {
+    margin: 2rem 0 1.5rem;
+    color: var(--accent-color);
+    font-size: 1.8rem;
+    padding-right: 1rem;
+    border-right: 4px solid var(--accent-color);
+    background: linear-gradient(to left, rgba(45, 106, 79, 0.1), transparent);
+    padding: 0.8rem 1rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.article-banner {
+    margin: -2rem -2rem 2rem -2rem;
+    max-height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+
+.article-banner img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.article-banner:hover img {
+    transform: scale(1.03);
+}
+
+.dark-theme .post-content h2.article-header {
+    background: linear-gradient(to left, rgba(45, 106, 79, 0.2), transparent);
+}
+
+.message {
+            margin-bottom: 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            max-width: 80%;
+            direction: rtl;
+            text-align: right;
+        }
+
+.message pre {
+            direction: ltr;
+            text-align: left;
+            background: #1e1e1e;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 0.5rem 0;
+            font-family: monospace;
+}
+h2, h3, h4, h5, h6 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+h2:last-of-type {
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.5rem;
+    margin-top: 2.5rem;
+}
